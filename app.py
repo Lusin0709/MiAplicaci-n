@@ -28,6 +28,8 @@ if not FLASK_SECRET_KEY:
     raise RuntimeError("Falta FLASK_SECRET_KEY en el archivo .env.")
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+app = Flask(__name__)
 @app.route("/api/prueba-supabase")
 def prueba_supabase():
     try:
@@ -45,8 +47,6 @@ def prueba_supabase():
             "conexion": False,
             "mensaje": "No se pudo conectar con Supabase."
         }), 500
-app = Flask(__name__)
-
 # Registros pendientes de verificación
 registros_pendientes = {}
 cambios_correo_pendientes = {}
