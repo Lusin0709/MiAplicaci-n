@@ -1,0 +1,6499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/intl-tel-input@latest/build/css/intlTelInput.css"
+>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recetas digitales</title>
+
+<style>
+  
+/* VENTANA DE VERIFICACIÓN DE CORREO */
+
+
+/* VENTANA DE VERIFICACIÓN */
+
+
+/* VERIFICACIÓN DE CAMBIO DE CORREO */
+/* TEMPORIZADOR DE REGISTRO */
+/* ENLACE PARA RECUPERAR CONTRASEÑA */
+
+.forgot-password {
+  align-self: flex-end;
+  margin-top: -4px;
+  color: var(--cyan-dark);
+  font-size: 12px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+#temporizadorRegistro {
+  color: var(--cyan-dark);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+#verificationForm .verification-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.verification-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.verification-overlay[hidden] {
+  display: none;
+}
+
+.verification-modal {
+  width: 100%;
+  max-width: 380px;
+  max-height: 95vh;
+  overflow-y: auto;
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px #00000014;
+  animation: aparecerModal 0.25s ease;
+}
+
+.verification-modal h2 {
+  margin: 0 0 18px;
+  font-size: 21px;
+  text-align: center;
+  color: #20252a;
+}
+
+.modal-verification-message {
+  margin: 0 0 12px;
+  color: #68747a;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+#codigoCorreoForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#codigoCorreoForm label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #20252a;
+}
+
+#codigoCorreoInput {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  text-align: center;
+  font-size: 24px;
+  letter-spacing: 8px;
+}
+
+#codigoCorreoInput:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px #08b8d533;
+}
+
+#codigoCorreoForm .auth-button {
+  width: 100%;
+}
+
+#mensajeCodigoCorreo {
+  min-height: 15px;
+  margin: 0;
+  color: #c62828;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* TEMPORIZADOR */
+
+.contenedor-temporizador {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+#textoTemporizadorCorreo {
+  margin: 0;
+  color: #68747a;
+  font-size: 12px;
+  text-align: center;
+}
+
+.temporizador-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: #68747a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+#codigoCorreoForm .verification-secondary {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--cyan-dark);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#codigoCorreoForm .verification-secondary:hover:not(:disabled) {
+  background: #08b8d51a;
+}
+
+#codigoCorreoForm .verification-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@keyframes aparecerModal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .verification-modal {
+    padding: 22px;
+  }
+}
+
+
+:root {
+  --cyan: #08b8d5;
+  --cyan-dark: #079db8;
+  --ink: #20252a;
+  --muted: #68747a;
+  --line: #d6dde0;
+  --bg: #f3f8fa;
+  --white: #fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--ink);
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* PANTALLA DE INICIO DE SESIÓN */
+
+.login-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg);
+}
+
+.login-content {
+  width: 100%;
+  max-width: 380px;
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px #00000014;
+}
+
+.login-content h1,
+.login-content p {
+  text-align: center;
+}
+
+.login-content h1 {
+  margin-bottom: 8px;
+  color: #111;
+}
+
+.login-content p {
+  margin-bottom: 28px;
+  color: #666;
+}
+
+#loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#loginForm label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+#loginForm input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+#loginForm button {
+  margin-top: 12px;
+  padding: 13px;
+  border: none;
+  border-radius: 8px;
+  background: var(--cyan);
+  font-weight: 600;
+}
+/* REGISTRO E INICIO DE SESIÓN */
+
+.login-content {
+  max-height: 95vh;
+  overflow-y: auto;
+}
+
+.login-content h2 {
+  margin: 0 0 18px;
+  font-size: 21px;
+  text-align: center;
+  color: #20252a;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.auth-form label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #20252a;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+}
+
+.auth-form input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px #08b8d533;
+}
+
+.auth-button {
+  margin-top: 12px;
+  padding: 13px;
+  border: none;
+  border-radius: 8px;
+  background: var(--cyan);
+  color: #07343c;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.auth-button:hover {
+  background: var(--cyan-dark);
+}
+
+/* BARRA DE SEGURIDAD */
+
+.password-strength {
+  margin-top: 2px;
+}
+
+.strength-bar {
+  width: 100%;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #e5e5e5;
+}
+
+#strengthFill {
+  width: 0%;
+  height: 100%;
+  border-radius: 10px;
+  background: #e53935;
+  transition: width 0.3s, background 0.3s;
+}
+
+#strengthText {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #68747a;
+}
+
+/* REQUISITOS DE CONTRASEÑA */
+
+.password-requirements {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin: 3px 0 8px;
+  font-size: 12px;
+  color: #c62828;
+}
+
+.password-requirements span.valid {
+  color: #218838;
+}
+
+/* CONFIRMACIÓN DE CONTRASEÑA */
+
+#passwordMatch {
+  font-size: 12px;
+  min-height: 15px;
+}
+
+#passwordMatch.match {
+  color: #218838;
+}
+
+#passwordMatch.no-match {
+  color: #c62828;
+}
+
+/* CAMBIAR ENTRE REGISTRO E INICIO DE SESIÓN */
+
+.auth-switch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e5e5;
+  font-size: 14px;
+  color: #68747a;
+}
+
+.auth-switch button {
+  border: none;
+  background: transparent;
+  color: var(--cyan-dark);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.auth-switch button:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .login-content {
+    padding: 22px;
+  }
+}
+/* VERIFICACIÓN DEL CORREO */
+
+.verification-message {
+  margin: 0 0 12px;
+  color: #68747a;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+#verificationForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#verificationForm label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+#verificationForm input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+}
+
+#verificationForm input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px #08b8d533;
+}
+
+#verificationCode {
+  text-align: center;
+  font-size: 24px;
+  letter-spacing: 8px;
+}
+
+.verification-secondary {
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: var(--cyan-dark);
+  font-weight: 600;
+  cursor: pointer;
+}
+.verification-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+/* ICONO DEL HOSPITAL */
+
+.hospital-icon {
+  position: relative;
+  display: block;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 18px;
+}
+
+.hospital-icon::before,
+.hospital-icon::after {
+  content: "";
+  position: absolute;
+  background: var(--cyan);
+  border-radius: 3px;
+}
+
+.hospital-icon::before {
+  width: 14px;
+  height: 42px;
+  top: 1px;
+  left: 15px;
+}
+
+.hospital-icon::after {
+  width: 42px;
+  height: 14px;
+  top: 15px;
+  left: 1px;
+}
+
+/* CONTENEDOR PRINCIPAL */
+
+.app {
+  max-width: 1120px;
+  min-height: 100vh;
+  margin: 0 auto;
+  background: white;
+  box-shadow: 0 0 30px #16313b12;
+}
+
+.topbar {
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  background: var(--cyan);
+  color: #062e37;
+}
+
+
+.top-menu {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.top-menu button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #062e37;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* EFECTO AL PASAR EL MOUSE */
+
+.top-menu button:hover {
+  background: #ffffff70;
+  transform: translateY(-2px);
+}
+
+/* EFECTO AL HACER CLIC */
+
+.top-menu button:active {
+  background: #ffffffa0;
+}
+.brand {
+  flex: 1;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.hospitaldeejemplo {
+  text-align: right;
+}
+
+/* CONTENIDO Y PANTALLAS */
+
+.content {
+  min-height: calc(100vh - 150px);
+  padding: 28px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+.subtitle {
+  margin: 0 0 26px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+/* PANTALLA DE INICIO */
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  max-width: 720px;
+  margin: 42px auto;
+}
+
+.tile {
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 20px;
+  border: 2px solid #707b80;
+  border-radius: 18px;
+  background: white;
+  font-size: 23px;
+  transition: 0.15s;
+}
+
+.tile:hover,
+.tile:focus {
+  border-color: var(--cyan-dark);
+  background: #f0fcff;
+}
+
+.tile .symbol {
+  font-size: 44px;
+}
+
+.tile.search-tile {
+  grid-column: 1 / -1;
+  min-height: 120px;
+}
+
+/* ICONOS */
+
+.recipe-icon {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 38px;
+  border: 3px solid currentColor;
+  border-radius: 3px;
+}
+
+.recipe-icon::before {
+  content: "";
+  position: absolute;
+  top: 9px;
+  left: 5px;
+  width: 14px;
+  height: 2px;
+  background: currentColor;
+  box-shadow: 0 6px 0 currentColor, 0 12px 0 currentColor;
+}
+
+.profile-icon {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+}
+
+.profile-icon::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.profile-icon::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 5px;
+  width: 26px;
+  height: 16px;
+  border-radius: 14px 14px 5px 5px;
+  background: currentColor;
+}
+
+/* RECETAS */
+
+.recipe-list {
+  display: grid;
+  gap: 12px;
+}
+
+.recipe-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: 1.5px solid #b8c2c6;
+  border-radius: 12px;
+  background: white;
+}
+
+.doc-icon {
+  min-width: 42px;
+  font-size: 32px;
+  text-align: center;
+}
+
+.recipe-info {
+  flex: 1;
+  line-height: 1.55;
+}
+
+.arrow {
+  padding: 8px;
+  border: none;
+  background: transparent;
+  font-size: 28px;
+}
+
+/* BÚSQUEDA */
+
+.searchbox {
+  display: flex;
+  gap: 8px;
+  margin: 18px 0 10px;
+}
+
+.searchbox input {
+  flex: 1;
+  min-width: 0;
+  padding: 13px 14px;
+  border: 1.5px solid #aeb9be;
+  border-radius: 8px;
+}
+
+.primary {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  background: var(--cyan);
+  color: #07343c;
+  font-weight: 600;
+}
+
+.secondary {
+  padding: 11px 16px;
+  border: 1.5px solid #aeb9be;
+  border-radius: 8px;
+  background: white;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding: 14px;
+  border: 1.5px solid #c7d0d4;
+  border-radius: 10px;
+}
+
+.filters label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #526066;
+}
+
+.section-label {
+  margin: 24px 0 12px;
+  color: var(--muted);
+}
+
+.empty {
+  display: none;
+  padding: 28px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* TARJETAS DE DETALLE Y PERFIL */
+
+.detail-card {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 22px;
+  border: 1.5px solid #c5ced2;
+  border-radius: 12px;
+}
+
+.detail-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.detail-card h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+
+.detail-row {
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.detail-row strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #536168;
+  font-size: 14px;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* VENTANA EMERGENTE DE EDITAR PERFIL */
+
+.profile-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #00000073;
+  overflow-y: auto;
+}
+
+.profile-modal {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 30px;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 8px 30px #0000002e;
+}
+
+.profile-modal h2 {
+  margin: 0 0 8px;
+  color: #111;
+  text-align: center;
+}
+
+.modal-subtitle {
+  margin: 0 0 24px;
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  border: none;
+  background: transparent;
+  color: #555;
+  font-size: 28px;
+}
+
+#editProfileForm {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+#editProfileForm label {
+  color: #222;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+#editProfileForm input {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 11px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: white;
+  color: #222;
+}
+
+#editProfileForm input[readonly] {
+  background: #f0f3f4;
+  color: #666;
+}
+
+#editProfileForm input:focus {
+  outline: 2px solid #08b8d544;
+  border-color: var(--cyan-dark);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 12px 8px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.modal-save {
+  background: var(--cyan);
+  color: #111;
+}
+
+.modal-cancel {
+  background: #e8eef0;
+  color: #222;
+}
+
+/* AJUSTES Y CERRAR SESIÓN */
+
+.logout-button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--cyan);
+  color: #111;
+  font-weight: 600;
+}
+
+/* NAVEGACIÓN INFERIOR */
+
+.bottom-nav {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  height: 74px;
+  background: var(--cyan);
+}
+
+.bottom-nav button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 0;
+  border-right: 1px solid #ffffff70;
+  background: transparent;
+  color: #06333c;
+  font-size: 18px;
+}
+.home-icon::before {
+  content: "";
+  position: absolute;
+  width: 19px;
+  height: 19px;
+  background: black;
+  transform: rotate(45deg);
+  top: 25px;
+  left: 190px;
+  border-radius: 2px;
+}
+
+.home-icon::after {
+  content: "";
+  position: absolute;
+  width: 19px;
+  height: 19px;
+  background: black;
+  bottom: 1px;
+  left: 190px;
+  bottom: 25px;
+}
+
+.settings-icon {
+  display: block;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  color: #000;
+}
+
+/* ADAPTACIÓN A CELULARES */
+
+@media (max-width: 620px) {
+  .topbar {
+  min-height: 66px;
+  padding: 8px;
+}
+
+.top-menu {
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.top-menu button {
+  padding: 10px 12px;
+  font-size: 14px;
+}
+  .brand {
+    font-size: 18px;
+  }
+
+  .content {
+    padding: 20px 14px;
+  }
+
+  .home-grid {
+    gap: 12px;
+    margin: 26px auto;
+  }
+
+  .tile {
+    min-height: 125px;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    font-size: 18px;
+  }
+
+  .tile .symbol {
+    font-size: 34px;
+  }
+
+  .tile.search-tile {
+    min-height: 100px;
+    flex-direction: row;
+  }
+
+  .bottom-nav button {
+    gap: 7px;
+    font-size: 15px;
+  }
+
+  .recipe-card {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .recipe-info {
+    font-size: 14px;
+  }
+
+  .doc-icon {
+    min-width: 30px;
+    font-size: 26px;
+  }
+
+  .arrow {
+    padding: 4px;
+    font-size: 23px;
+  }
+
+  .detail-card {
+    padding: 16px;
+  }
+
+  .profile-modal {
+    padding: 24px 20px;
+  }
+
+  .searchbox {
+    flex-wrap: wrap;
+  }
+
+  .searchbox input {
+    width: 100%;
+  }
+}
+.iti__search-input {
+  padding-left: 38px !important;
+  box-sizing: border-box;
+  height: 40px !important;
+  line-height: normal !important;
+}
+
+.iti__search-input::placeholder {
+  line-height: normal;
+}
+
+.iti__search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.iti__search-icon {
+  position: absolute;
+  left: 12px;
+  top: 42%;
+  transform: translateY(-50%);
+}
+/* ALERTAS PERSONALIZADAS */
+
+.alerta-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.alerta-overlay[hidden] {
+  display: none;
+}
+
+.alerta-modal {
+  width: 100%;
+  max-width: 350px;
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px #00000020;
+  text-align: center;
+  animation: aparecerAlerta 0.25s ease;
+}
+
+.alerta-icono {
+  width: 45px;
+  height: 45px;
+  margin: 0 auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #08b8d51a;
+  color: var(--cyan-dark);
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.alerta-modal h2 {
+  margin: 0 0 12px;
+  color: var(--ink);
+  font-size: 21px;
+}
+
+.alerta-modal p {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.alerta-modal button {
+  width: 100%;
+  cursor: pointer;
+}
+
+@keyframes aparecerAlerta {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* RECUPERACIÓN DE CONTRASEÑA */
+
+#recuperacionModal .verification-modal {
+  max-width: 400px;
+}
+
+#recuperacionModal input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  margin-bottom: 12px;
+}
+
+#recuperacionModal input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px #08b8d533;
+}
+
+#recuperacionModal label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+#recuperacionModal .auth-button {
+  width: 100%;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+#recuperacionModal .verification-secondary {
+  width: 100%;
+}
+
+/* REQUISITOS DE LA NUEVA CONTRASEÑA */
+
+#recuperacionModal .password-requirements {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 0 0 15px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+#recuperacionModal .password-requirements span.valid {
+  color: #16834a;
+}
+
+#recuperacionModal .password-requirements span:not(.valid) {
+  color: #c62828;
+}
+/* BOTÓN CAMBIAR CONTRASEÑA */
+
+.settings-outline-button {
+    width: 100%;
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid #999999;
+    border-radius: 8px;
+    color: #000000;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.settings-outline-button:hover {
+    background: #f5f5f5;
+}
+
+
+/* BOTÓN ELIMINAR CUENTA */
+
+.settings-delete-button {
+    width: 100%;
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid #d93025;
+    border-radius: 8px;
+    color: #d93025;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.settings-delete-button:hover {
+    background: #fff1f0;
+}
+
+.botones-confirmar-eliminacion {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.botones-confirmar-eliminacion button {
+  flex: 1;
+  padding: 12px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* CONTENEDOR DE OPCIONES PARA INVITADOS */
+
+.guest-settings-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e5e5;
+}
+
+/* BOTÓN REGISTRARSE */
+
+.guest-register-button {
+    width: 100%;
+    padding: 13px 16px;
+    background: var(--cyan);
+    border: 1px solid var(--cyan);
+    border-radius: 10px;
+    color: black;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.guest-register-button:hover {
+    background:#ffffff70;
+}
+
+/* BOTÓN INICIAR SESIÓN */
+
+.guest-login-button {
+    width: 100%;
+    padding: 13px 16px;
+    background: transparent;
+    border: 1px #b5b5b5;
+    border-radius: 10px;
+    color: #b5b5b5;;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.guest-login-button:hover {
+    background: #eef4f8;
+}
+
+#noEliminarCuenta {
+  background: transparent;
+  border: 1px solid #000000;
+  color: #000000;
+}
+
+#siEliminarCuenta {
+  background: #d93025;
+  border: 1px solid #d93025;
+  color: #ffffff;
+}
+
+#noEliminarCuenta:hover {
+  background: #f2f2f2;
+}
+
+#siEliminarCuenta:hover {
+  background: #b3261e;
+}
+
+/* ======================================
+   MODAL DE ELIMINACIÓN DE CUENTA
+====================================== */
+
+#eliminarCuentaModal .verification-modal {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+  border-radius: 18px;
+  box-shadow: 0 12px 40px #00000025;
+}
+
+#eliminarCuentaModal h2 {
+  margin-bottom: 12px;
+  font-size: 23px;
+  font-weight: 700;
+  text-align: left;
+}
+
+#eliminarCuentaModal p {
+  color: #68747a;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+/* ETAPAS Y CAMPOS */
+
+#eliminarCuentaModal #etapaIdentidadEliminacion,
+#eliminarCuentaModal #etapaCodigoEliminacion {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#eliminarCuentaModal label {
+  margin-top: 5px;
+  color: #303a40;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#eliminarCuentaModal input {
+  display: block;
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid #d9e0e3;
+  border-radius: 10px;
+  background: #f8fafb;
+  color: #20252a;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+#eliminarCuentaModal input:focus {
+  border-color: var(--cyan);
+  background: white;
+  box-shadow: 0 0 0 3px #08b8d51f;
+}
+
+/* CÓDIGO DE VERIFICACIÓN */
+
+#eliminarCuentaModal #codigoEliminacion {
+  text-align: center;
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: 8px;
+}
+
+/* BOTONES PRINCIPALES */
+
+#eliminarCuentaModal #enviarCodigoEliminacion,
+#eliminarCuentaModal #verificarCodigoEliminacion {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 12px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: var(--cyan);
+  color: #07343c;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background 0.2s;
+}
+
+#eliminarCuentaModal #enviarCodigoEliminacion:hover,
+#eliminarCuentaModal #verificarCodigoEliminacion:hover {
+  background: var(--cyan-dark);
+}
+
+/* REENVIAR CÓDIGO */
+
+#eliminarCuentaModal #reenviarCodigoEliminacion {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--cyan-dark);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#eliminarCuentaModal #reenviarCodigoEliminacion:hover:not(:disabled) {
+  background: #08b8d51a;
+}
+
+#eliminarCuentaModal #reenviarCodigoEliminacion:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* CONFIRMACIÓN */
+
+#eliminarCuentaModal #etapaConfirmarEliminacion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#eliminarCuentaModal .botones-confirmar-eliminacion {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+#eliminarCuentaModal .botones-confirmar-eliminacion button {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background 0.2s;
+}
+
+#eliminarCuentaModal #noEliminarCuenta {
+  border: 1px solid #d9e0e3;
+  background: #f5f7f8;
+  color: #303a40;
+}
+
+#eliminarCuentaModal #noEliminarCuenta:hover {
+  background: #e9eef0;
+}
+
+#eliminarCuentaModal #siEliminarCuenta {
+  border: 1px solid #d93025;
+  background: #d93025;
+  color: white;
+}
+
+#eliminarCuentaModal #siEliminarCuenta:hover {
+  background: #b3261e;
+}
+
+/* CANCELAR Y CERRAR */
+
+#eliminarCuentaModal #cancelarEliminacionCuenta {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: #68747a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#eliminarCuentaModal #cancelarEliminacionCuenta:hover {
+  background: #f2f5f6;
+}
+
+/* ADAPTACIÓN A CELULARES */
+
+@media (max-width: 480px) {
+  #eliminarCuentaModal .verification-modal {
+    padding: 24px 20px;
+  }
+}
+
+/* MODAL DE CONFIRMACIÓN DE CIERRE DE SESIÓN */
+
+#cerrarSesionModal .verification-modal {
+  max-width: 420px;
+  padding: 32px;
+  border-radius: 18px;
+}
+
+#cerrarSesionModal h2 {
+  margin-bottom: 12px;
+  font-size: 21px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+#cerrarSesionModal p {
+  margin: 0 0 22px;
+  color: #68747a;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.botones-cerrar-sesion {
+  display: flex;
+  gap: 12px;
+}
+
+.botones-cerrar-sesion button {
+  flex: 1;
+  min-height: 46px;
+  padding: 12px 8px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* BOTÓN NO */
+
+#noCerrarSesion {
+  border: 1px solid #aeb9be;
+  background: transparent;
+  color: #20252a;
+}
+
+#noCerrarSesion:hover {
+  background: #f2f5f6;
+}
+
+/* BOTÓN SÍ */
+
+#siCerrarSesion {
+  border: 1px solid #d93025;
+  background: #d93025;
+  color: white;
+}
+
+#siCerrarSesion:hover {
+  background: #b3261e;
+}
+
+@media (max-width: 480px) {
+  #cerrarSesionModal .verification-modal {
+    padding: 24px 20px;
+  }
+
+  .botones-cerrar-sesion {
+    flex-direction: column-reverse;
+  }
+}
+/* ======================================
+   DISEÑO DEL MODAL DE CAMBIO DE CONTRASEÑA
+====================================== */
+
+/* Contenedor de las opciones */
+#etapaElegirCambio {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+/* Botones de las tres opciones */
+#etapaElegirCambio button,
+#cancelarCambioContrasena {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+
+    border: 1px solid #aeb9be;
+    border-radius: 9px;
+
+    background: transparent;
+    color: #59666d;
+
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+/* Efecto al pasar el mouse */
+#etapaElegirCambio button:hover,
+#cancelarCambioContrasena:hover {
+    border-color: #08b8d5;
+    background: #eafaff;
+    color: #079db8;
+}
+
+/* Efecto al presionar */
+#etapaElegirCambio button:active,
+#cancelarCambioContrasena:active {
+    background: #d9f5fa;
+    transform: scale(0.98);
+}
+
+/* Botón cancelar */
+#cancelarCambioContrasena {
+    margin-top: 16px;
+}
+
+/* Evitar estilos anteriores de botones */
+#etapaElegirCambio button:focus-visible,
+#cancelarCambioContrasena:focus-visible {
+    outline: 2px solid #08b8d5;
+    outline-offset: 3px;
+}
+
+
+/* ======================================
+   DISEÑO DE LA ETAPA DE CONTRASEÑA ACTUAL
+====================================== */
+
+#etapaCambioActual {
+    width: 100%;
+}
+
+#etapaCambioActual label,
+#etapaCambioActual input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#etapaCambioActual label {
+    margin: 14px 0 7px;
+    color: #59666d;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#etapaCambioActual input {
+    min-height: 44px;
+    padding: 11px 13px;
+    border: 1px solid #cbd5da;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#etapaCambioActual input:focus {
+    border-color: #08b8d5;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(8, 184, 213, 0.12);
+}
+
+/* Botón guardar */
+#guardarCambioActual {
+    width: 100%;
+    min-height: 46px;
+    margin-top: 16px;
+    border-radius: 9px;
+    box-sizing: border-box;
+}
+/* BOTÓN ENVIAR CÓDIGO - CAMBIO DE CONTRASEÑA */
+
+#etapaSolicitarCodigoCambio {
+    width: 100%;
+}
+
+#enviarCodigoCambio {
+    display: block;
+    width: 100%;
+    max-width: none;
+    min-height: 46px;
+    box-sizing: border-box;
+    margin-top: 16px;
+}
+/* PANTALLA DE VERIFICACIÓN DEL CÓDIGO */
+
+#etapaVerificarCodigoCambio {
+    width: 100%;
+}
+
+#etapaVerificarCodigoCambio label {
+    display: block;
+    margin: 18px 0 9px;
+    color: #59666d;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#codigoCambio {
+    display: block;
+    width: 100%;
+    height: 58px;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1.5px solid #cbd5da;
+    border-radius: 12px;
+    background: #f8fcfd;
+    color: #263840;
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: 12px;
+    text-align: center;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+#codigoCambio:focus {
+    border-color: #08b8d5;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(8, 184, 213, 0.12);
+}
+
+#verificarCodigoCambio,
+#reenviarCodigoCambio {
+    display: block;
+    width: 100%;
+    max-width: none;
+    min-height: 46px;
+    box-sizing: border-box;
+    margin-top: 12px;
+    border-radius: 9px;
+}
+
+#reenviarCodigoCambio {
+    border: 1px solid #aeb9be;
+    background: transparent;
+    color: #59666d;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+#reenviarCodigoCambio:not(:disabled):hover {
+    border-color: #08b8d5;
+    background: #eafaff;
+    color: #079db8;
+}
+
+#reenviarCodigoCambio:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#temporizadorCambio {
+    margin: 12px 0;
+    color: #718087;
+    font-size: 13px;
+    text-align: center;
+}
+#etapaVerificarCodigoCambio[hidden],
+#etapaNuevaCambio[hidden] {
+    display: none !important;
+}
+/* =====================================
+   DISEÑO MODERNO - NUEVA CONTRASEÑA
+===================================== */
+
+#etapaNuevaCambio {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#etapaNuevaCambio .modal-verification-message {
+    margin-bottom: 22px;
+    color: #687980;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+#etapaNuevaCambio label {
+    display: block;
+    margin: 18px 0 8px;
+    color: #34464e;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#etapaNuevaCambio input {
+    display: block;
+    width: 100%;
+    height: 48px;
+    box-sizing: border-box;
+    padding: 12px 15px;
+    border: 1px solid #d5e0e4;
+    border-radius: 10px;
+    background: #f8fbfc;
+    color: #263840;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+#etapaNuevaCambio input:focus {
+    border-color: #08b8d5;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(8, 184, 213, 0.10);
+}
+
+#etapaNuevaCambio input::placeholder {
+    color: #a2afb5;
+}
+
+#etapaNuevaCambio .password-requirements {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin: 14px 0 18px;
+    padding: 14px;
+    border: 1px solid #e3ecef;
+    border-radius: 10px;
+    background: #f8fbfc;
+}
+
+#etapaNuevaCambio .password-requirements span {
+    color: #7b898f;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+#etapaNuevaCambio .password-requirements span.valid {
+    color: #16834a;
+}
+
+#coincidenciaCambioMail {
+    margin: 10px 0;
+    font-size: 13px;
+}
+
+#guardarCambioVerificado {
+    display: block;
+    width: 100%;
+    max-width: none;
+    min-height: 49px;
+    margin-top: 20px;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 10px;
+    background: #08b8d5;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+#guardarCambioVerificado:hover {
+    background: #079db8;
+}
+
+#guardarCambioVerificado:active {
+    transform: scale(0.98);
+}
+
+#guardarCambioVerificado:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#etapaNuevaCambio[hidden] {
+    display: none !important;
+}
+.detail-row button.secondary {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+.detail-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.text-size-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.text-size-row button {
+    width: 100%;
+    box-sizing: border-box;
+}
+/* BOTÓN ENTRAR COMO INVITADO */
+
+.guest-button {
+    background: transparent;
+    border: 1px solid #d1d1d1;
+    border-radius: 8px;
+    color: #858585;
+    font-size: 14px;
+    font-weight: 400;
+    box-shadow: none;
+    transition: all 0.2s ease;
+}
+
+.guest-button:hover {
+    background: #f8f8f8;
+    border-color: #b5b5b5;
+    color: #666666;
+}
+
+/* FONDO OSCURO DEL MODAL */
+
+.login-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* CONTENEDOR DE LA VENTANA */
+
+.login-modal-content {
+    position: relative;
+    background: #ffffff;
+    width: 100%;
+    max-width: 420px;
+    padding: 35px 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+}
+
+.login-modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #263746;
+    font-size: 24px;
+}
+
+.login-modal-subtitle {
+    color: #888888;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+/* CRUZ PARA CERRAR */
+
+.close-login-modal {
+    position: absolute;
+    top: 12px;
+    right: 17px;
+    background: transparent;
+    border: none;
+    color: #999999;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.close-login-modal:hover {
+    color: #333333;
+}
+
+/* FORMULARIO */
+
+#modalLoginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#modalLoginForm label {
+    color: #444444;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+#modalLoginForm input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+#modalLoginForm input:focus {
+    outline: none;
+    border-color: #315c81;
+}
+
+#modalLoginForm .forgot-password {
+    align-self: flex-end;
+    margin-bottom: 12px;
+    font-size: 13px;
+}
+
+/* REGISTRO */
+
+.login-modal-register {
+    text-align: center;
+    color: #888888;
+    font-size: 13px;
+    margin-top: 24px;
+}
+
+.login-modal-register a {
+    color: #000000;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-modal-register a:hover {
+    text-decoration: underline;
+}
+
+/* RESPETAR EL ATRIBUTO HIDDEN */
+
+.login-modal[hidden] {
+    display: none;
+}
+#recoveryEmailStep[hidden],
+#recoveryCodeStep[hidden],
+#recoveryPasswordStep[hidden] {
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PANTALLA DE INICIO DE SESIÓN -->
+
+<!-- PANTALLA DE REGISTRO E INICIO DE SESIÓN -->
+
+<div id="loginScreen" class="login-screen">
+
+  <div class="login-content">
+
+    <span class="hospital-icon"></span>
+
+    <h1>Hospital</h1>
+    <p>Sistema de recetas médicas</p>
+
+    <!-- FORMULARIO DE REGISTRO -->
+
+    <form id="registerForm" class="auth-form">
+
+      <h2>Crear una cuenta</h2>
+
+      <label for="registerCedula">Cédula de identidad</label>
+      <input
+        type="text"
+        id="registerCedula"
+        placeholder="Ej. 1.234.567-8"
+        required
+      >
+
+      <label for="registerEmail">Correo electrónico</label>
+      <input
+        type="email"
+        id="registerEmail"
+        placeholder="Ingresá tu correo"
+        required
+      >
+
+      <label for="registerPassword">Contraseña</label>
+      <input
+        type="password"
+        id="registerPassword"
+        placeholder="Creá una contraseña"
+        required
+      >
+
+      <!-- BARRA DE SEGURIDAD -->
+
+      <div class="password-strength">
+        <div class="strength-bar">
+          <div id="strengthFill"></div>
+        </div>
+
+        <span id="strengthText">Seguridad de la contraseña</span>
+      </div>
+
+      <div class="password-requirements">
+        <span id="reqLength">✕ Al menos 8 caracteres</span>
+        <span id="reqUpper">✕ Una mayúscula</span>
+        <span id="reqLower">✕ Una minúscula</span>
+        <span id="reqNumber">✕ Un número</span>
+        <span id="reqSymbol">✕ Un símbolo</span>
+      </div>
+
+      <label for="confirmPassword">Repetir contraseña</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        placeholder="Repetí tu contraseña"
+        required
+      >
+
+      <span id="passwordMatch"></span>
+
+      <button type="submit" class="auth-button">
+        Registrarme
+      </button>
+<button type="button" id="guestButton"
+    class="auth-button guest-button">
+    Entrar como invitado
+</button>
+    </form>
+
+    <!-- FORMULARIO DE INICIO DE SESIÓN -->
+
+    <form id="loginForm" class="auth-form" hidden>
+
+      <h2>Iniciar sesión</h2>
+
+      <label for="usuario">Correo electrónico</label>
+      <input
+        type="email"
+        id="usuario"
+        placeholder="Ingresá tu correo"
+        required
+      >
+
+<label for="contrasena">Contraseña</label>
+<input
+  type="password"
+  id="contrasena"
+  placeholder="Ingresá tu contraseña"
+  required
+>
+
+<a href="#" id="olvidoContrasena" class="forgot-password">
+  ¿Olvidaste tu contraseña?
+</a>
+
+<button type="submit" class="auth-button">
+  Iniciar sesión
+</button>
+<button type="button" id="guestButtonLogin"
+    class="auth-button guest-button">
+    Entrar como invitado
+</button>
+
+    </form>
+    <!-- FORMULARIO DE VERIFICACIÓN -->
+
+    <form id="verificationForm" class="auth-form" hidden>
+
+      <h2>Verificá tu correo</h2>
+
+      <p class="verification-message">
+        Te enviamos un código de seis dígitos a tu correo electrónico.
+        Ingresalo para completar tu registro.
+      </p>
+
+      <label for="verificationEmail">
+        Correo electrónico
+      </label>
+
+      <input
+        type="email"
+        id="verificationEmail"
+        readonly
+      >
+
+      <label for="verificationCode">
+        Código de verificación
+      </label>
+
+      <input
+        type="text"
+        id="verificationCode"
+        placeholder="000000"
+        maxlength="6"
+        inputmode="numeric"
+        pattern="[0-9]{6}"
+        autocomplete="one-time-code"
+        required
+      >
+
+      <button type="submit" class="auth-button">
+        Verificar correo
+      </button>
+
+     <!-- TEMPORIZADOR DE REENVÍO -->
+
+<div class="contenedor-temporizador">
+
+  <div class="temporizador-info">
+    <span id="temporizadorRegistro">02:00</span>
+  </div>
+
+</div>
+
+<button
+  type="button"
+  id="resendCodeButton"
+  class="verification-secondary"
+  disabled
+>
+  Reenviar código
+</button>
+
+      <button
+        type="button"
+        id="backToLoginButton"
+        class="verification-secondary"
+      >
+        Volver al inicio de sesión
+      </button>
+
+    </form>
+    <!-- CAMBIAR ENTRE REGISTRO E INICIO DE SESIÓN -->
+
+    <div class="auth-switch">
+
+      <span id="switchText">¿Ya tenés una cuenta?</span>
+
+      <button
+        type="button"
+        id="switchAuthButton"
+      >
+        Iniciar sesión
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+<!-- APLICACIÓN PRINCIPAL -->
+
+<div class="app" id="app" hidden>
+
+  <header class="topbar">
+  <nav class="top-menu" id="topMenu" aria-label="Navegación principal">
+  </nav>
+</header>
+  <main class="content">
+
+    <!-- INICIO -->
+
+    <section id="inicio" class="screen active">
+      <h1>¡Bienvenido/a!</h1>
+
+      <p class="subtitle">
+        Consultá tus recetas médicas de forma sencilla y tené toda
+        la información organizada en un solo lugar.
+      </p>
+
+      <div class="home-grid">
+
+        <button class="tile" onclick="showScreen('recetas')">
+          <span class="symbol">
+            <span class="recipe-icon"></span>
+          </span>
+          <span>Mis recetas</span>
+        </button>
+
+        <button class="tile" onclick="showScreen('perfil')">
+          <span class="symbol">
+            <span class="profile-icon"></span>
+          </span>
+          <span>Mi perfil</span>
+        </button>
+
+        <button
+          class="tile search-tile"
+          onclick="showScreen('buscar')"
+        >
+          <span>Buscar recetas</span>
+          <span class="symbol">⌕</span>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- MIS RECETAS -->
+
+    <section id="recetas" class="screen">
+      <h1>Mis recetas</h1>
+<div id="guestRecipesMessage" hidden>
+    <p>Acá se mostrarán las recetas.</p>
+</div>
+      <p class="subtitle">
+        Seleccioná una receta para consultar sus detalles.
+      </p>
+
+      <div id="allRecipes" class="recipe-list"></div>
+    </section>
+
+    <!-- BUSCAR RECETAS -->
+
+    <section id="buscar" class="screen">
+      <h1>Buscar recetas</h1>
+<div id="guestSearchMessage" hidden>
+    <p>Acá se mostrarán las recetas.</p>
+</div>
+      <p class="subtitle">
+        Buscá por medicamento, médico, fecha o especialidad.
+      </p>
+
+      <div class="searchbox">
+        <input
+          id="searchInput"
+          placeholder="Escribí para buscar…"
+          oninput="filterRecipes()"
+        >
+
+        <button class="primary" onclick="filterRecipes()">
+          Buscar ⌕
+        </button>
+      </div>
+
+      <div class="filters">
+        <label>
+          <input
+            type="radio"
+            name="filter"
+            value="all"
+            checked
+            onchange="filterRecipes()"
+          >
+          Todos
+        </label>
+
+        <label>
+          <input
+            type="radio"
+            name="filter"
+            value="medicamento"
+            onchange="filterRecipes()"
+          >
+          Medicamento
+        </label>
+
+        <label>
+          <input
+            type="radio"
+            name="filter"
+            value="doctor"
+            onchange="filterRecipes()"
+          >
+          Médico
+        </label>
+
+        <label>
+          <input
+            type="radio"
+            name="filter"
+            value="fecha"
+            onchange="filterRecipes()"
+          >
+          Fecha
+        </label>
+
+        <label>
+          <input
+            type="radio"
+            name="filter"
+            value="especialidad"
+            onchange="filterRecipes()"
+          >
+          Especialidad
+        </label>
+      </div>
+
+      <p class="section-label">Historial de búsqueda</p>
+
+      <div id="searchResults" class="recipe-list"></div>
+
+      <p id="empty" class="empty">
+        No se encontraron recetas con ese criterio.
+      </p>
+    </section>
+
+    <!-- DETALLE DE RECETA -->
+
+    <section id="detalle" class="screen">
+      <h1>Detalle de receta</h1>
+
+      <p class="subtitle">
+        Información de la receta seleccionada.
+      </p>
+
+      <article class="detail-card">
+
+        <div class="detail-head">
+          <div>
+            <div class="recipe-icon"></div>
+            <h2 id="detailMedicine">Medicamento</h2>
+            <span id="detailDate"></span>
+          </div>
+
+ 
+        </div>
+
+        <div class="detail-row">
+          <strong>Paciente</strong>
+          <span id="detailPatient">Paciente de ejemplo</span>
+        </div>
+
+        <div class="detail-row">
+          <strong>Medicamento</strong>
+          <span id="detailMedicine2"></span>
+        </div>
+
+        <div class="detail-row">
+          <strong>Duración del tratamiento</strong>
+          <span id="detailDuration"></span>
+        </div>
+
+        <div class="detail-row">
+          <strong>Otras especificaciones</strong>
+          <span id="detailNotes"></span>
+        </div>
+
+        <div class="detail-row">
+          <strong>Profesional</strong>
+          <span id="detailDoctor"></span>
+        </div>
+
+        <div class="detail-row">
+          <strong>Especialidad</strong>
+          <span id="detailSpecialty"></span>
+        </div>
+
+        <div class="detail-actions">
+          <button
+            class="primary"
+            onclick="showScreen('recetas')"
+          >
+            Volver a mis recetas
+          </button>
+
+          <button class="secondary" onclick="window.print()">
+            Imprimir
+          </button>
+        </div>
+
+      </article>
+    </section>
+
+    <!-- MI PERFIL -->
+
+    <section id="perfil" class="screen">
+      <h1>Mi perfil</h1>
+<div id="guestProfileMessage" hidden>
+    <p>Acá se mostrarán los datos del perfil.</p>
+</div>
+      <p class="subtitle">
+        Datos de ejemplo para el prototipo.
+      </p>
+
+      <article class="detail-card">
+
+        <div class="detail-row">
+          <strong>Nombre</strong>
+          <span id="profileNameDisplay">Paciente de ejemplo</span>
+        </div>
+
+        <div class="detail-row">
+          <strong>Cédula de identidad</strong>
+          <span id="profileCedulaDisplay">Cédula de ejemplo</span>
+        </div>
+
+        <div class="detail-row">
+          <strong>Correo electrónico</strong>
+          <span id="profileEmail">usuario@ejemplo.com</span>
+        </div>
+
+        <div class="detail-row">
+          <strong>Fecha de nacimiento</strong>
+          <span id="profileBirthDateDisplay">00/00/0000</span>
+        </div>
+
+        <div class="detail-row">
+          <strong>Celular</strong>
+          <span id="profilePhone">No ingresado</span>
+        </div>
+
+        <div class="detail-actions">
+          <button
+            class="primary"
+            id="editProfileButton"
+            type="button"
+          >
+            Editar perfil
+          </button>
+        </div>
+
+      </article>
+    </section>
+
+    <!-- AJUSTES -->
+
+    
+<section id="ajustes" class="screen">
+    <h1>Ajustes</h1>
+    <p class="subtitle">Opciones de visualización.</p>
+
+    <article class="detail-card">
+
+        <div class="detail-row">
+            <strong>Tamaño del texto</strong>
+
+            <button class="secondary" onclick="changeText(1)">
+                Aumentar texto +
+            </button>
+
+            <div class="detail-row text-size-row"></div>
+
+            <button class="secondary" onclick="changeText(-1)">
+                Disminuir texto −
+            </button>
+        </div>
+
+        <div class="detail-row">
+            <strong>Privacidad</strong>
+            <span>
+                Este prototipo usa datos ficticios y no guarda
+                información médica real.
+            </span>
+        </div>
+
+        <!-- OPCIONES PARA INVITADOS -->
+        <div id="guestSettings" class="guest-settings-actions" hidden>
+            <button type="button" id="guestRegisterButton"
+                class="guest-register-button">
+                Registrarse
+            </button>
+
+            <button type="button" id="guestLoginButton"
+                class="guest-login-button">
+                Iniciar sesión
+            </button>
+        </div>
+
+        <!-- OPCIONES PARA USUARIOS REGISTRADOS -->
+        <div id="registeredSettings">
+            <div class="detail-row">
+                <button id="logoutButton" class="logout-button">
+                    Cerrar sesión
+                </button>
+            </div>
+
+            <div class="detail-row">
+                <button id="changePasswordButton"
+                    class="settings-outline-button">
+                    Cambiar contraseña
+                </button>
+            </div>
+
+            <div class="detail-row">
+                <button id="deleteAccountButton"
+                    class="settings-delete-button">
+                    Eliminar cuenta
+                </button>
+            </div>
+        </div>
+
+    </article>
+</section>
+
+<!-- MODAL DE CAMBIO DE CONTRASEÑA -->
+<div id="cambiarContrasenaModal" class="verification-overlay" hidden>
+
+  <div class="verification-modal">
+
+    <h2>Cambiar contraseña</h2>
+
+    <!-- ETAPA 1: ELEGIR MÉTODO -->
+
+    <div id="etapaElegirCambio">
+
+      <p class="modal-verification-message">
+        ¿Cómo querés cambiar tu contraseña?
+      </p>
+
+      <button
+        type="button"
+        id="opcionContrasenaActual"
+        class="auth-button"
+      >
+        Tengo mi contraseña actual
+      </button>
+
+      <button
+        type="button"
+        id="opcionOlvideContrasena"
+        class="verification-secondary"
+      >
+        Olvidé mi contraseña
+      </button>
+
+    </div>
+
+    <!-- ETAPA 2A: CAMBIO CON CONTRASEÑA ACTUAL -->
+
+    <div id="etapaCambioActual" hidden>
+
+      <p class="modal-verification-message">
+        Ingresá tu contraseña actual y elegí una nueva.
+      </p>
+
+      <label for="passwordActualCambio">Contraseña actual</label>
+      <input
+        type="password"
+        id="passwordActualCambio"
+        placeholder="Ingresá tu contraseña actual"
+        maxlength="128"
+        autocomplete="current-password"
+      >
+
+      <label for="passwordNuevaCambio">Nueva contraseña</label>
+      <input
+        type="password"
+        id="passwordNuevaCambio"
+        placeholder="Ingresá tu nueva contraseña"
+        maxlength="128"
+        autocomplete="new-password"
+      >
+
+      <div class="password-requirements">
+        <span id="cambioReqLength">✕ Al menos 8 caracteres</span>
+        <span id="cambioReqUpper">✕ Una mayúscula</span>
+        <span id="cambioReqLower">✕ Una minúscula</span>
+        <span id="cambioReqNumber">✕ Un número</span>
+        <span id="cambioReqSymbol">✕ Un símbolo</span>
+      </div>
+
+      <label for="confirmarPasswordNuevaCambio">
+        Confirmar nueva contraseña
+      </label>
+
+      <input
+        type="password"
+        id="confirmarPasswordNuevaCambio"
+        placeholder="Repetí tu nueva contraseña"
+        maxlength="128"
+        autocomplete="new-password"
+      >
+
+      <p id="coincidenciaCambio" class="verification-message"></p>
+
+      <button
+        type="button"
+        id="guardarCambioActual"
+        class="auth-button"
+      >
+        Guardar nueva contraseña
+      </button>
+
+    </div>
+
+    <!-- ETAPA 2B: SOLICITAR CÓDIGO -->
+
+    <div id="etapaSolicitarCodigoCambio" hidden>
+
+      <p class="modal-verification-message">
+        Vamos a enviar un código de verificación al correo asociado a tu cuenta.
+      </p>
+
+      <button
+        type="button"
+        id="enviarCodigoCambio"
+        class="auth-button"
+      >
+        Enviar código
+      </button>
+
+    </div>
+
+    <!-- ETAPA 3B: VERIFICAR CÓDIGO -->
+
+    <div id="etapaVerificarCodigoCambio" hidden>
+
+      <p class="modal-verification-message">
+        Ingresá el código de seis dígitos que enviamos a tu correo.
+      </p>
+
+      <label for="codigoCambio">Código de verificación</label>
+
+      <input
+        type="text"
+        id="codigoCambio"
+        placeholder="000000"
+        maxlength="6"
+        inputmode="numeric"
+        autocomplete="one-time-code"
+      >
+
+      <button
+        type="button"
+        id="verificarCodigoCambio"
+        class="auth-button"
+      >
+        Verificar código
+      </button>
+
+      <p id="temporizadorCambio" class="verification-message"></p>
+
+      <button
+        type="button"
+        id="reenviarCodigoCambio"
+        class="verification-secondary"
+        disabled
+      >
+        Reenviar código
+      </button>
+
+    </div>
+
+    <!-- ETAPA 4B: ESTABLECER NUEVA CONTRASEÑA -->
+
+    <div id="etapaNuevaCambio" hidden>
+
+      <p class="modal-verification-message">
+        Tu identidad fue verificada. Ahora podés establecer una nueva contraseña.
+      </p>
+
+      <label for="passwordNuevaVerificada">Nueva contraseña</label>
+
+      <input
+        type="password"
+        id="passwordNuevaVerificada"
+        placeholder="Ingresá tu nueva contraseña"
+        maxlength="128"
+        autocomplete="new-password"
+      >
+
+      <div class="password-requirements">
+        <span id="cambioMailReqLength">✕ Al menos 8 caracteres</span>
+        <span id="cambioMailReqUpper">✕ Una mayúscula</span>
+        <span id="cambioMailReqLower">✕ Una minúscula</span>
+        <span id="cambioMailReqNumber">✕ Un número</span>
+        <span id="cambioMailReqSymbol">✕ Un símbolo</span>
+      </div>
+
+      <label for="confirmarPasswordNuevaVerificada">
+        Confirmar nueva contraseña
+      </label>
+
+      <input
+        type="password"
+        id="confirmarPasswordNuevaVerificada"
+        placeholder="Repetí tu nueva contraseña"
+        maxlength="128"
+        autocomplete="new-password"
+      >
+
+      <p id="coincidenciaCambioMail" class="verification-message"></p>
+
+      <button
+        type="button"
+        id="guardarCambioVerificado"
+        class="auth-button"
+      >
+        Guardar nueva contraseña
+      </button>
+
+    </div>
+
+    <button
+      type="button"
+      id="cancelarCambioContrasena"
+      class="verification-secondary"
+    >
+      Cancelar
+    </button>
+
+  </div>
+</div>
+  </main>
+
+  <!-- NAVEGACIÓN INFERIOR -->
+
+  <nav class="bottom-nav">
+    <button onclick="showScreen('inicio')">
+      <span class="home-icon"></span>
+      Inicio
+    </button>
+
+    <button onclick="showScreen('ajustes')">
+      <svg
+        class="settings-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path d="M19.14 12.94c.04-.31.06-.62.06-.94s-.02-.63-.07-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.95l-.36-2.54A.49.49 0 0 0 13.87 2h-3.74a.49.49 0 0 0-.49.42L9.28 4.96c-.59.23-1.14.55-1.63.95l-2.39-.96a.5.5 0 0 0-.61.22L2.73 8.49a.5.5 0 0 0 .12.64l2.03 1.58a6.6 6.6 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.12.21.37.3.61.22l2.39-.96c.49.4 1.04.72 1.63.95l.36 2.54c.04.24.25.42.49.42h3.74c.24 0 .45-.18.49-.42l.36-2.54c.59-.23 1.14-.55 1.63-.95l2.39.96c.24.09.49-.01.61-.22l1.92-3.32a.5.5 0 0 0-.12-.64zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/>
+      </svg>
+      Ajustes
+    </button>
+  </nav>
+
+</div>
+
+<!-- VENTANA EMERGENTE: EDITAR PERFIL -->
+
+<div class="profile-modal-overlay" id="profileModal" hidden>
+  <div
+    class="profile-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+  >
+
+    <button
+      type="button"
+      class="modal-close"
+      id="closeProfileModal"
+      aria-label="Cerrar"
+    >
+      &times;
+    </button>
+
+    <span class="hospital-icon"></span>
+
+    <h2 id="modalTitle">Editar perfil</h2>
+
+    <p class="modal-subtitle">
+      Consultá y actualizá tus datos personales.
+    </p>
+
+    <form id="editProfileForm">
+
+      <label for="editName">Nombre completo</label>
+      <input type="text" id="editName" required>
+
+      <label for="editCedula">Cédula de identidad</label>
+      <input type="text" id="editCedula" readonly>
+
+      <label for="editBirthDate">Fecha de nacimiento</label>
+   <input
+  type="date"
+  id="editBirthDate"
+  min="1900-01-01"
+  max="2026-11-03"
+>
+
+      <label for="editEmail">Correo electrónico</label>
+      <input type="email" id="editEmail" required>
+
+      <label for="editPhone">Celular</label>
+      <input type="tel" id="editPhone" required>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="modal-cancel"
+          id="cancelProfileModal"
+        >
+          Cancelar
+        </button>
+
+        <button type="submit" class="modal-save">
+          Guardar cambios
+        </button>
+
+      </div>
+
+    </form>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@latest/build/js/intlTelInput.min.js"></script>
+
+<!-- VENTANA DE VERIFICACIÓN DE CORREO -->
+
+<div class="verification-overlay" id="codigoCorreoModal" hidden>
+  <div class="verification-modal">
+
+    <h2>Verificá tu correo</h2>
+
+    <p class="modal-verification-message">
+      Enviamos un código de seis dígitos a tu correo electrónico actual.
+      Ingresalo para confirmar el cambio.
+    </p>
+
+    <form id="codigoCorreoForm">
+
+      <label for="codigoCorreoInput">
+        Código de verificación
+      </label>
+
+      <input
+        type="text"
+        id="codigoCorreoInput"
+        placeholder="000000"
+        maxlength="6"
+        inputmode="numeric"
+        pattern="[0-9]{6}"
+        autocomplete="one-time-code"
+        required
+      >
+
+      <p id="mensajeCodigoCorreo" class="verification-message"></p>
+
+      <button type="submit" class="auth-button">
+        Verificar correo
+      </button>
+
+      <div class="contenedor-temporizador">
+
+        <p id="textoTemporizadorCorreo">
+          Podrás solicitar un nuevo código en breve.
+        </p>
+
+        <div class="temporizador-info">
+          <span id="temporizadorCorreo">02:00</span>
+        </div>
+
+        <button
+          type="button"
+          id="reenviarCodigoCorreo"
+          class="verification-secondary"
+          disabled
+        >
+          Reenviar código
+        </button>
+
+      </div>
+
+      <button
+        type="button"
+        id="cancelarCodigoCorreo"
+        class="verification-secondary"
+      >
+        Cancelar
+      </button>
+
+    </form>
+  </div>
+</div>
+<!-- ALERTA PERSONALIZADA -->
+<div id="alertaPersonalizada" class="alerta-overlay" hidden>
+  <div class="alerta-modal">
+    <div class="alerta-icono">!</div>
+
+    <h2 id="alertaTitulo">Aviso</h2>
+
+    <p id="alertaMensaje"></p>
+
+    <button type="button" id="cerrarAlerta" class="auth-button">
+      Aceptar
+    </button>
+  </div>
+</div>
+<!-- RECUPERACIÓN DE CONTRASEÑA -->
+
+<div id="recuperacionModal" class="verification-overlay" hidden>
+  <div class="verification-modal">
+
+    <h2>Recuperar contraseña</h2>
+
+    <!-- ETAPA 1: SOLICITAR CÓDIGO -->
+
+    <div id="etapaSolicitarCodigo">
+
+      <p class="modal-verification-message">
+        Ingresá tu correo electrónico para recibir un código de verificación.
+      </p>
+
+      <label for="correoRecuperacion">Correo electrónico</label>
+
+      <input
+        type="email"
+        id="correoRecuperacion"
+        placeholder="Ingresá tu correo"
+        required
+      >
+
+      <button
+        type="button"
+        id="enviarCodigoRecuperacion"
+        class="auth-button"
+      >
+        Enviar código
+      </button>
+
+    </div>
+
+    <!-- ETAPA 2: VERIFICAR CÓDIGO -->
+
+   <div id="etapaVerificarCodigo" hidden>
+  <p class="modal-verification-message">
+    Ingresá el código de seis dígitos que enviamos a tu correo.
+  </p>
+
+  <label for="codigoRecuperacion">Código de verificación</label>
+  <input type="text" id="codigoRecuperacion" placeholder="000000"
+         maxlength="6" inputmode="numeric"
+         pattern="[0-9]{6}" autocomplete="one-time-code">
+
+  <button type="button" id="verificarCodigoRecuperacion" class="auth-button">
+    Verificar código
+  </button>
+
+  <p id="temporizadorRecuperacion" class="verification-message">
+    Podrás reenviar el código en 02:00
+  </p>
+
+  <button type="button" id="reenviarCodigoRecuperacion" class="verification-secondary" disabled>
+    Reenviar código
+  </button>
+</div>
+    <!-- ETAPA 3: NUEVA CONTRASEÑA -->
+
+    <div id="etapaNuevaContrasena" hidden>
+
+      <p class="modal-verification-message">
+        El código fue verificado. Ahora podés crear tu nueva contraseña.
+      </p>
+
+      <label for="nuevaContrasena">Nueva contraseña</label>
+
+      <input
+        type="password"
+        id="nuevaContrasena"
+        placeholder="Ingresá tu nueva contraseña"
+        maxlength="128"
+      >
+
+      <div class="password-requirements">
+        <span id="recReqLength">✕ Al menos 8 caracteres</span>
+        <span id="recReqUpper">✕ Una mayúscula</span>
+        <span id="recReqLower">✕ Una minúscula</span>
+        <span id="recReqNumber">✕ Un número</span>
+        <span id="recReqSymbol">✕ Un símbolo</span>
+      </div>
+
+      <label for="confirmarNuevaContrasena">
+        Confirmar nueva contraseña
+      </label>
+
+      <input
+        type="password"
+        id="confirmarNuevaContrasena"
+        placeholder="Repetí tu nueva contraseña"
+        maxlength="128"
+      >
+
+      <p id="coincidenciaRecuperacion" class="verification-message"></p>
+
+      <button
+        type="button"
+        id="guardarNuevaContrasena"
+        class="auth-button"
+      >
+        Guardar nueva contraseña
+      </button>
+
+    </div>
+
+    <button
+      type="button"
+      id="cancelarRecuperacion"
+      class="verification-secondary"
+    >
+      Cancelar
+    </button>
+
+  </div>
+</div>
+
+<!-- Modal para eliminar cuenta -->
+<div id="eliminarCuentaModal" class="verification-overlay" hidden>
+  <div class="verification-modal">
+
+    <h2>Eliminar cuenta</h2>
+
+    <!-- Etapa 1: comprobar identidad -->
+    <div id="etapaIdentidadEliminacion">
+      <p class="modal-verification-message">
+        Para continuar, confirmá tu identidad ingresando tu correo electrónico y contraseña.
+      </p>
+
+      <label for="correoEliminacion">Correo electrónico</label>
+      <input
+        type="email"
+        id="correoEliminacion"
+        placeholder="Ingresá tu correo"
+        autocomplete="email"
+      >
+
+      <label for="passwordEliminacion">Contraseña</label>
+      <input
+        type="password"
+        id="passwordEliminacion"
+        placeholder="Ingresá tu contraseña"
+        autocomplete="current-password"
+      >
+
+      <button type="button" id="enviarCodigoEliminacion" class="auth-button">
+        Continuar
+      </button>
+    </div>
+
+    <!-- Etapa 2: verificar código -->
+    <div id="etapaCodigoEliminacion" hidden>
+      <p class="modal-verification-message">
+        Te enviamos un código de seis dígitos a tu correo electrónico.
+        Ingresalo para continuar.
+      </p>
+
+      <label for="codigoEliminacion">Código de verificación</label>
+      <input
+        type="text"
+        id="codigoEliminacion"
+        placeholder="000000"
+        maxlength="6"
+        inputmode="numeric"
+        autocomplete="one-time-code"
+      >
+
+      <button type="button" id="verificarCodigoEliminacion" class="auth-button">
+        Verificar código
+      </button>
+
+      <p id="temporizadorEliminacion" class="verification-message">
+        Podrás reenviar el código en 02:00
+      </p>
+
+      <button
+        type="button"
+        id="reenviarCodigoEliminacion"
+        class="verification-secondary"
+        disabled
+      >
+        Reenviar código
+      </button>
+    </div>
+
+    <!-- Etapa 3: confirmación definitiva -->
+    <div id="etapaConfirmarEliminacion" hidden>
+      <p class="modal-verification-message">
+        ¿Estás seguro/a de que querés eliminar tu cuenta?
+      </p>
+
+      <p class="modal-verification-message">
+        Esta acción es permanente. Se eliminarán los datos asociados
+        a tu cuenta y no podrás recuperarlos.
+      </p>
+
+      <div class="botones-confirmar-eliminacion">
+        <button type="button" id="noEliminarCuenta">
+          No, cancelar
+        </button>
+
+        <button type="button" id="siEliminarCuenta">
+          Sí, eliminar mi cuenta
+        </button>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      id="cancelarEliminacionCuenta"
+      class="verification-secondary"
+    >
+      Cancelar
+    </button>
+
+  </div>
+</div>
+<!-- MODAL DE CONFIRMACIÓN DE CIERRE DE SESIÓN -->
+
+<div id="cerrarSesionModal" class="verification-overlay" hidden>
+  <div class="verification-modal modal-cerrar-sesion">
+
+    <h2>¿Estás seguro/a de que querés cerrar sesión?</h2>
+
+    <p>
+      Si cerrás sesión, tendrás que volver a ingresar para acceder a tu cuenta.
+    </p>
+
+    <div class="botones-cerrar-sesion">
+      <button type="button" id="noCerrarSesion">
+        No, volver
+      </button>
+
+      <button type="button" id="siCerrarSesion">
+        Sí, cerrar sesión
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- VENTANA EMERGENTE DE INICIO DE SESIÓN -->
+<div id="loginModal" class="login-modal" hidden>
+
+    <div class="login-modal-content">
+
+        <button type="button" id="closeLoginModal"
+            class="close-login-modal" aria-label="Cerrar">
+            &times;
+        </button>
+
+        <h2>Iniciar sesión</h2>
+        <p class="login-modal-subtitle">
+            Ingresá tus datos para acceder a tu cuenta.
+        </p>
+
+        <form id="modalLoginForm">
+
+            <label for="modalUsuario">Correo electrónico</label>
+            <input
+                type="email"
+                id="modalUsuario"
+                placeholder="Ingresá tu correo"
+                required
+            >
+
+            <label for="modalContrasena">Contraseña</label>
+            <input
+                type="password"
+                id="modalContrasena"
+                placeholder="Ingresá tu contraseña"
+                required
+            >
+
+            <a href="#" id="modalOlvidoContrasena"
+                class="forgot-password">
+                ¿Olvidaste tu contraseña?
+            </a>
+
+            <button type="submit" class="auth-button">
+                Iniciar sesión
+            </button>
+
+        </form>
+
+<!-- RECUPERAR CONTRASEÑA -->
+<div id="recoveryEmailStep" hidden>
+    <h2>Recuperar contraseña</h2>
+    <p class="login-modal-subtitle">
+        Ingresá el correo electrónico asociado a tu cuenta.
+    </p>
+
+    <label for="recoveryEmail">Correo electrónico</label>
+    <input type="email" id="recoveryEmail"
+        placeholder="Ingresá tu correo">
+
+    <button type="button" id="sendRecoveryCode"
+        class="auth-button">
+        Enviar código
+    </button>
+
+    <button type="button" id="backToModalLogin"
+        class="guest-login-button">
+        Volver al inicio de sesión
+    </button>
+</div>
+
+<!-- VERIFICAR CÓDIGO -->
+<div id="recoveryCodeStep" hidden>
+    <h2>Verificar código</h2>
+    <p class="login-modal-subtitle">
+        Ingresá el código de seis dígitos que recibiste por correo.
+    </p>
+
+    <label for="recoveryCode">Código de verificación</label>
+    <input type="text" id="recoveryCode"
+        placeholder="000000" maxlength="6"
+        inputmode="numeric">
+
+    <button type="button" id="verifyRecoveryCode"
+        class="auth-button">
+        Verificar código
+    </button>
+</div>
+
+<!-- NUEVA CONTRASEÑA -->
+<div id="recoveryPasswordStep" hidden>
+    <h2>Nueva contraseña</h2>
+    <p class="login-modal-subtitle">
+        Elegí una contraseña nueva para tu cuenta.
+    </p>
+
+    <label for="recoveryNewPassword">
+        Nueva contraseña
+    </label>
+    <input type="password" id="recoveryNewPassword"
+        placeholder="Ingresá una contraseña">
+
+    <label for="recoveryConfirmPassword">
+        Confirmar contraseña
+    </label>
+    <input type="password" id="recoveryConfirmPassword"
+        placeholder="Repetí la contraseña">
+
+    <button type="button" id="saveRecoveryPassword"
+        class="auth-button">
+        Guardar nueva contraseña
+    </button>
+</div>
+
+        <p class="login-modal-register">
+            ¿Aún no tenés cuenta?
+            <a href="#" id="modalRegisterLink">Registrate</a>
+        </p>
+
+    </div>
+</div>
+
+<!-- JAVASCRIPT -->
+
+<script>
+  
+/* DATOS DE EJEMPLO DE LAS RECETAS */
+
+const recipes = [
+  {
+    id: 1,
+    medicine: "Amoxicilina (ejemplo)",
+    doctor: "Dra. Ana Pérez",
+    date: "12/09/2026",
+    patient: "Paciente de ejemplo",
+    duration: "Según indicación profesional",
+    notes: "Seguir las indicaciones escritas por el profesional de salud.",
+    specialty: "Medicina general"
+  },
+  {
+    id: 2,
+    medicine: "Ibuprofeno (ejemplo)",
+    doctor: "Dr. Martín López",
+    date: "03/08/2026",
+    patient: "Paciente de ejemplo",
+    duration: "Consultar receta",
+    notes: "Verificar las indicaciones antes de usar.",
+    specialty: "Medicina general"
+  },
+  {
+    id: 3,
+    medicine: "Loratadina (ejemplo)",
+    doctor: "Dra. Lucía Silva",
+    date: "21/07/2026",
+    patient: "Paciente de ejemplo",
+    duration: "Según indicación profesional",
+    notes: "Información ilustrativa del prototipo.",
+    specialty: "Alergología"
+  },
+  {
+    id: 4,
+    medicine: "Vitamina D (ejemplo)",
+    doctor: "Dr. Martín López",
+    date: "15/06/2026",
+    patient: "Paciente de ejemplo",
+    duration: "Consultar receta",
+    notes: "Información ilustrativa del prototipo.",
+    specialty: "Medicina general"
+  }
+];
+
+/* CREAR TARJETAS DE RECETAS */
+
+function card(r) {
+  return `
+    <article class="recipe-card">
+      <div class="doc-icon">
+        <span class="recipe-icon"></span>
+      </div>
+
+      <div class="recipe-info">
+        <div><strong>Medicamento:</strong> ${r.medicine}</div>
+        <div><strong>Doctor:</strong> ${r.doctor}</div>
+        <div><strong>Fecha:</strong> ${r.date}</div>
+      </div>
+
+      <button
+        class="arrow"
+        aria-label="Ver detalle"
+        onclick="openRecipe(${r.id})"
+      >»</button>
+    </article>
+  `;
+}
+/* MOSTRAR LAS RECETAS */
+
+function render() {
+  document.getElementById("allRecipes").innerHTML =
+    recipes.map(card).join("");
+
+  filterRecipes();
+}
+
+/* CAMBIAR DE PANTALLA */
+
+/* CAMBIAR DE PANTALLA */
+
+/* CAMBIAR DE PANTALLA */
+
+function showScreen(id, guardarHistorial = true) {
+
+  const selectedScreen = document.getElementById(id);
+
+  if (!selectedScreen) return;
+
+  // Ocultar todas las pantallas
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.classList.remove("active");
+  });
+
+  // Mostrar la pantalla seleccionada
+  selectedScreen.classList.add("active");
+
+  // Actualizar el menú superior
+  updateTopMenu(id);
+
+  // Guardar la última pantalla visitada
+  if (id !== "detalle") {
+    localStorage.setItem("pantallaActual", id);
+  }
+
+  // Registrar el cambio en el historial del navegador
+  if (guardarHistorial) {
+    history.pushState({ pantalla: id }, "", "#" + id);
+  }
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+  if (id === "buscar") {
+    filterRecipes();
+  }
+
+  if (id === "perfil") {
+    renderProfile();
+  }
+}
+/* NAVEGACIÓN CON LA FLECHA DEL NAVEGADOR */
+
+
+window.addEventListener("popstate", function(event) {
+  // Volver al modo invitado
+if (event.state?.pantalla === "invitado") {
+    modoInvitado = true;
+    app.hidden = false;
+    loginScreen.hidden = true;
+
+    aplicarModoInvitado();
+    showScreen("inicio", false);
+    return;
+}
+
+  // Volver a la pantalla de registro
+  if (event.state?.pantalla === "registro") {
+    app.hidden = true;
+    loginScreen.hidden = false;
+
+    registerForm.hidden = false;
+    loginForm.hidden = true;
+    verificationForm.hidden = true;
+
+    modoInvitado = false;
+    return;
+  }
+
+  // Volver a la pantalla de inicio de sesión
+  if (event.state?.pantalla === "login") {
+    app.hidden = true;
+    loginScreen.hidden = false;
+
+    registerForm.hidden = true;
+    loginForm.hidden = false;
+    verificationForm.hidden = true;
+
+    modoInvitado = false;
+    return;
+  }
+
+  const pantalla = event.state?.pantalla || "inicio";
+  showScreen(pantalla, false);
+});
+
+/* ABRIR EL DETALLE DE UNA RECETA */
+
+function openRecipe(id) {
+  const recipe = recipes.find(item => item.id === id);
+
+  if (!recipe) return;
+
+  document.getElementById("detailMedicine").textContent =
+    recipe.medicine;
+
+  document.getElementById("detailMedicine2").textContent =
+    recipe.medicine;
+
+  document.getElementById("detailDate").textContent =
+    "Fecha: " + recipe.date;
+
+  document.getElementById("detailPatient").textContent =
+    recipe.patient;
+
+  document.getElementById("detailDuration").textContent =
+    recipe.duration;
+
+  document.getElementById("detailNotes").textContent =
+    recipe.notes;
+
+  document.getElementById("detailDoctor").textContent =
+    recipe.doctor;
+
+  document.getElementById("detailSpecialty").textContent =
+    recipe.specialty;
+
+  showScreen("detalle");
+}
+
+/* BUSCAR Y FILTRAR RECETAS */
+
+function filterRecipes() {
+  const searchInput = document.getElementById("searchInput");
+
+  const query = (searchInput?.value || "").toLowerCase();
+
+  const selectedFilter =
+    document.querySelector('input[name="filter"]:checked')?.value
+    || "all";
+
+  const found = recipes.filter(recipe => {
+    let value;
+
+    if (selectedFilter === "medicamento") {
+      value = recipe.medicine;
+    } else if (selectedFilter === "doctor") {
+      value = recipe.doctor;
+    } else if (selectedFilter === "fecha") {
+      value = recipe.date;
+    } else if (selectedFilter === "especialidad") {
+      value = recipe.specialty;
+    } else {
+      value = Object.values(recipe).join(" ");
+    }
+
+    return value.toLowerCase().includes(query);
+  });
+
+  document.getElementById("searchResults").innerHTML =
+    found.map(card).join("");
+
+  document.getElementById("empty").style.display =
+    found.length ? "none" : "block";
+}
+
+/* MENÚ */
+
+/* MENÚ HORIZONTAL SUPERIOR */
+
+function updateTopMenu(currentScreen) {
+  const menu = document.getElementById("topMenu");
+
+  const options = [
+    { id: "inicio", name: "Inicio" },
+    { id: "buscar", name: "Buscar recetas" },
+    { id: "recetas", name: "Mis recetas" },
+    { id: "perfil", name: "Mi perfil" },
+    { id: "ajustes", name: "Ajustes" }
+  ];
+
+  menu.innerHTML = "";
+
+  options.forEach(option => {
+
+    // No mostrar la sección en la que estamos
+    if (option.id !== currentScreen) {
+
+      const button = document.createElement("button");
+
+      button.type = "button";
+      button.textContent = option.name;
+
+      button.onclick = function() {
+        showScreen(option.id);
+      };
+
+      menu.appendChild(button);
+    }
+
+  });
+}
+/* CAMBIAR TAMAÑO DEL TEXTO */
+
+/* CAMBIAR TAMAÑO DEL TEXTO */
+
+let textScale = 1;
+
+function changeText(amount) {
+  textScale = Math.min(
+    2,
+    Math.max(0.9, textScale + amount * 0.05)
+  );
+
+  document.getElementById("app").style.fontSize =
+    (16 * textScale) + "px";
+}
+
+/* INICIO DE SESIÓN */
+
+/* INICIO DE SESIÓN */
+
+/* REGISTRO E INICIO DE SESIÓN */
+
+const loginScreen = document.getElementById("loginScreen");
+const app = document.getElementById("app");
+const guestButton = document.getElementById("guestButton");
+const guestButtonLogin = document.getElementById("guestButtonLogin");
+
+let modoInvitado = false;
+
+const registerForm = document.getElementById("registerForm");
+const loginForm = document.getElementById("loginForm");
+const verificationForm = document.getElementById("verificationForm");
+
+const verificationEmail = document.getElementById("verificationEmail");
+const verificationCode = document.getElementById("verificationCode");
+
+const resendCodeButton = document.getElementById("resendCodeButton");
+// TEMPORIZADOR DE REGISTRO
+
+let tiempoRestanteRegistro = 120;
+let intervaloTemporizadorRegistro = null;
+
+const pantallaTemporizadorRegistro =
+  document.getElementById("temporizadorRegistro");
+
+function actualizarTemporizadorRegistro() {
+  const minutos = Math.floor(tiempoRestanteRegistro / 60);
+  const segundos = tiempoRestanteRegistro % 60;
+
+  pantallaTemporizadorRegistro.textContent =
+    `${String(minutos).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
+
+  resendCodeButton.disabled = tiempoRestanteRegistro > 0;
+}
+
+function iniciarTemporizadorRegistro() {
+  clearInterval(intervaloTemporizadorRegistro);
+
+  tiempoRestanteRegistro = 120;
+  actualizarTemporizadorRegistro();
+
+  intervaloTemporizadorRegistro = setInterval(function() {
+
+    if (tiempoRestanteRegistro > 0) {
+      tiempoRestanteRegistro--;
+      actualizarTemporizadorRegistro();
+    }
+
+    if (tiempoRestanteRegistro <= 0) {
+      clearInterval(intervaloTemporizadorRegistro);
+      resendCodeButton.disabled = false;
+    }
+
+  }, 1000);
+}
+const backToLoginButton = document.getElementById("backToLoginButton");
+// VOLVER AL INICIO DE SESIÓN DESDE LA VERIFICACIÓN
+
+backToLoginButton.addEventListener("click", function() {
+  verificationForm.hidden = true;
+  registerForm.hidden = true;
+  loginForm.hidden = false;
+
+  authSwitch.hidden = false;
+
+  correoPendienteVerificacion = "";
+  verificationCode.value = "";
+});
+
+const authSwitch = document.querySelector(".auth-switch");
+
+let correoPendienteVerificacion = "";
+let cedulaPendienteVerificacion = "";
+
+const registerCedula = document.getElementById("registerCedula");
+const registerEmail = document.getElementById("registerEmail");
+const registerPassword = document.getElementById("registerPassword");
+const confirmPassword = document.getElementById("confirmPassword");
+
+const strengthFill = document.getElementById("strengthFill");
+const strengthText = document.getElementById("strengthText");
+const passwordMatch = document.getElementById("passwordMatch");
+
+const switchAuthButton = document.getElementById("switchAuthButton");
+const switchText = document.getElementById("switchText");
+
+
+/* CAMBIAR ENTRE REGISTRO E INICIO DE SESIÓN */
+
+switchAuthButton.addEventListener("click", function() {
+
+  const mostrandoRegistro = !registerForm.hidden;
+
+  registerForm.hidden = mostrandoRegistro;
+  loginForm.hidden = !mostrandoRegistro;
+  verificationForm.hidden = true;
+
+  if (mostrandoRegistro) {
+    switchText.textContent = "¿Todavía no tenés una cuenta?";
+    switchAuthButton.textContent = "Registrarme";
+  } else {
+    switchText.textContent = "¿Ya tenés una cuenta?";
+    switchAuthButton.textContent = "Iniciar sesión";
+  }
+
+});
+
+
+/* COMPROBAR SEGURIDAD DE LA CONTRASEÑA */
+
+function checkPasswordStrength(password) {
+
+  const requirements = {
+    length: password.length >= 8,
+    upper: /[A-Z]/.test(password),
+    lower: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    symbol: /[^A-Za-z0-9]/.test(password)
+  };
+
+  const score = Object.values(requirements).filter(Boolean).length;
+
+  const percentage = score * 20;
+
+  strengthFill.style.width = percentage + "%";
+
+  const hue = score * 24;
+
+  strengthFill.style.background =
+    `hsl(${hue}, 75%, 45%)`;
+
+  const messages = [
+    "Muy débil",
+    "Muy débil",
+    "Débil",
+    "Media",
+    "Fuerte",
+    "Muy fuerte"
+  ];
+
+  strengthText.textContent = messages[score];
+
+  updateRequirement("reqLength", requirements.length, "Al menos 8 caracteres");
+  updateRequirement("reqUpper", requirements.upper, "Una mayúscula");
+  updateRequirement("reqLower", requirements.lower, "Una minúscula");
+  updateRequirement("reqNumber", requirements.number, "Un número");
+  updateRequirement("reqSymbol", requirements.symbol, "Un símbolo");
+
+  return {
+    valid: score === 5,
+    requirements
+  };
+
+}
+
+
+/* ACTUALIZAR LOS REQUISITOS VISUALES */
+
+function updateRequirement(id, valid, text) {
+
+  const element = document.getElementById(id);
+
+  element.textContent = (valid ? "✓ " : "✕ ") + text;
+
+  element.classList.toggle("valid", valid);
+
+}
+
+
+/* ACTUALIZAR BARRA AL ESCRIBIR */
+
+registerPassword.addEventListener("input", function() {
+
+  checkPasswordStrength(registerPassword.value);
+
+  checkPasswordMatch();
+
+});
+
+
+/* COMPROBAR QUE LAS CONTRASEÑAS COINCIDAN */
+
+confirmPassword.addEventListener("input", checkPasswordMatch);
+
+function checkPasswordMatch() {
+
+  const password = registerPassword.value;
+  const confirmation = confirmPassword.value;
+
+  if (!confirmation) {
+    passwordMatch.textContent = "";
+    passwordMatch.className = "";
+    return false;
+  }
+
+  if (password === confirmation) {
+
+    passwordMatch.textContent = "✓ Las contraseñas coinciden";
+    passwordMatch.className = "match";
+
+    return true;
+
+  } else {
+
+    passwordMatch.textContent = "✕ Las contraseñas no coinciden";
+    passwordMatch.className = "no-match";
+
+    return false;
+
+  }
+
+}
+
+
+
+/* REGISTRAR UNA CUENTA */
+
+/* MOSTRAR EL FORMULARIO DE VERIFICACIÓN */
+
+function mostrarFormularioVerificacion(email) {
+  correoPendienteVerificacion = email;
+  verificationEmail.value = email;
+  verificationCode.value = "";
+
+  registerForm.hidden = true;
+  loginForm.hidden = true;
+  verificationForm.hidden = false;
+  authSwitch.hidden = true;
+
+  // Agregar la pantalla de verificación al historial
+  history.pushState(
+    { pantalla: "verificacion" },
+    "",
+    "#verificacion"
+  );
+  iniciarTemporizadorRegistro();
+  
+  verificationCode.focus();
+}
+// VOLVER AL REGISTRO CON LA FLECHA DEL NAVEGADOR
+
+window.addEventListener("popstate", function() {
+
+  if (!verificationForm.hidden) {
+    verificationForm.hidden = true;
+    loginForm.hidden = true;
+    registerForm.hidden = false;
+
+    authSwitch.hidden = false;
+
+    correoPendienteVerificacion = "";
+    verificationCode.value = "";
+  }
+
+});
+
+/* REGISTRAR UNA CUENTA */
+const alertaPersonalizada = document.getElementById("alertaPersonalizada");
+const alertaMensaje = document.getElementById("alertaMensaje");
+const deleteAccountButton = document.getElementById("deleteAccountButton");
+const cerrarAlerta = document.getElementById("cerrarAlerta");
+
+
+function mostrarAlerta(mensaje) {
+  alertaMensaje.textContent = mensaje;
+  alertaPersonalizada.hidden = false;
+  cerrarAlerta.focus();
+}
+cerrarAlerta.addEventListener("click", function() {
+  alertaPersonalizada.hidden = true;
+});
+
+/* RECUPERACIÓN DE CONTRASEÑA */
+
+
+const recuperacionModal = document.getElementById("recuperacionModal");
+const etapaSolicitarCodigo = document.getElementById("etapaSolicitarCodigo");
+const etapaVerificarCodigo = document.getElementById("etapaVerificarCodigo");
+const etapaNuevaContrasena = document.getElementById("etapaNuevaContrasena");
+const cancelarRecuperacion = document.getElementById("cancelarRecuperacion");
+
+const correoRecuperacion = document.getElementById("correoRecuperacion");
+const codigoRecuperacion = document.getElementById("codigoRecuperacion");
+
+
+const nuevaContrasena = document.getElementById("nuevaContrasena");
+const confirmarNuevaContrasena = document.getElementById("confirmarNuevaContrasena");
+
+
+const coincidenciaRecuperacion = document.getElementById("coincidenciaRecuperacion");
+
+
+const olvidoContrasena = document.getElementById("olvidoContrasena");
+
+
+let requisitosRecuperacionValidos = false;
+// ======================================
+// CAMBIO DE CONTRASEÑA DESDE AJUSTES
+// ======================================
+
+const changePasswordButton = document.getElementById("changePasswordButton");
+
+const cambiarContrasenaModal = document.getElementById("cambiarContrasenaModal");
+
+const etapaElegirCambio = document.getElementById("etapaElegirCambio");
+const etapaCambioActual = document.getElementById("etapaCambioActual");
+const etapaSolicitarCodigoCambio = document.getElementById("etapaSolicitarCodigoCambio");
+const etapaVerificarCodigoCambio = document.getElementById("etapaVerificarCodigoCambio");
+const etapaNuevaCambio = document.getElementById("etapaNuevaCambio");
+
+const opcionContrasenaActual = document.getElementById("opcionContrasenaActual");
+const opcionOlvideContrasena = document.getElementById("opcionOlvideContrasena");
+
+const passwordActualCambio = document.getElementById("passwordActualCambio");
+const passwordNuevaCambio = document.getElementById("passwordNuevaCambio");
+const confirmarPasswordNuevaCambio = document.getElementById("confirmarPasswordNuevaCambio");
+
+const passwordNuevaVerificada = document.getElementById("passwordNuevaVerificada");
+const confirmarPasswordNuevaVerificada = document.getElementById("confirmarPasswordNuevaVerificada");
+
+const coincidenciaCambio = document.getElementById("coincidenciaCambio");
+const coincidenciaCambioMail = document.getElementById("coincidenciaCambioMail");
+
+const enviarCodigoCambio = document.getElementById("enviarCodigoCambio");
+const codigoCambio = document.getElementById("codigoCambio");
+const verificarCodigoCambio = document.getElementById("verificarCodigoCambio");
+const reenviarCodigoCambio = document.getElementById("reenviarCodigoCambio");
+const temporizadorCambio = document.getElementById("temporizadorCambio");
+
+const guardarCambioActual = document.getElementById("guardarCambioActual");
+const guardarCambioVerificado = document.getElementById("guardarCambioVerificado");
+const cancelarCambioContrasena = document.getElementById("cancelarCambioContrasena");
+
+let requisitosCambioValidos = false;
+let requisitosCambioMailValidos = false;
+
+let intervaloCambio = null;
+let segundosCambio = 120;
+
+// ABRIR EL MODAL DESDE AJUSTES
+
+changePasswordButton.addEventListener("click", function() {
+    cambiarContrasenaModal.hidden = false;
+
+    etapaElegirCambio.hidden = false;
+    etapaCambioActual.hidden = true;
+    etapaSolicitarCodigoCambio.hidden = true;
+    etapaVerificarCodigoCambio.hidden = true;
+    etapaNuevaCambio.hidden = true;
+});
+
+// ELEGIR CAMBIO CON CONTRASEÑA ACTUAL
+
+opcionContrasenaActual.addEventListener("click", function() {
+    etapaElegirCambio.hidden = true;
+    etapaCambioActual.hidden = false;
+
+    passwordActualCambio.focus();
+});
+
+// ELEGIR RECUPERACIÓN POR CORREO
+
+opcionOlvideContrasena.addEventListener("click", function() {
+    etapaElegirCambio.hidden = true;
+    etapaSolicitarCodigoCambio.hidden = false;
+});
+// ENVIAR CÓDIGO AL CORREO DE LA CUENTA
+
+enviarCodigoCambio.addEventListener("click", async function() {
+
+    const boton = this;
+    boton.disabled = true;
+    boton.textContent = "Enviando código...";
+
+    try {
+        const respuesta = await fetch("/api/solicitar-codigo-cambio", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin"
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok || !resultado.exito) {
+            mostrarAlerta(
+                resultado.mensaje || "No se pudo enviar el código."
+            );
+            return;
+        }
+
+        etapaSolicitarCodigoCambio.hidden = true;
+        etapaVerificarCodigoCambio.hidden = false;
+
+        codigoCambio.value = "";
+        segundosCambio = 120;
+
+        clearInterval(intervaloCambio);
+
+        temporizadorCambio.textContent =
+            "Podés solicitar otro código en 2:00";
+
+        intervaloCambio = setInterval(function() {
+
+            segundosCambio--;
+
+            const minutos = Math.floor(segundosCambio / 60);
+            const segundos = segundosCambio % 60;
+
+            temporizadorCambio.textContent =
+                `Podés solicitar otro código en ${minutos}:${String(segundos).padStart(2, "0")}`;
+
+            if (segundosCambio <= 0) {
+                clearInterval(intervaloCambio);
+                temporizadorCambio.textContent =
+                    "Ya podés solicitar otro código.";
+                reenviarCodigoCambio.disabled = false;
+            }
+
+        }, 1000);
+
+        mostrarAlerta(resultado.mensaje);
+
+    } catch (error) {
+        console.error("Error al enviar el código:", error);
+        mostrarAlerta("No se pudo conectar con el servidor.");
+
+    } finally {
+        boton.disabled = false;
+        boton.textContent = "Enviar código";
+    }
+});
+// VERIFICAR EL CÓDIGO DE CAMBIO DE CONTRASEÑA
+
+verificarCodigoCambio.addEventListener("click", async function() {
+
+    const codigo = codigoCambio.value.trim();
+    const boton = this;
+
+    if (!/^\d{6}$/.test(codigo)) {
+        mostrarAlerta("Ingresá el código de seis dígitos.");
+        codigoCambio.focus();
+        return;
+    }
+
+    boton.disabled = true;
+    boton.textContent = "Verificando...";
+
+    try {
+        const respuesta = await fetch("/api/verificar-codigo-cambio", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                codigo: codigo
+            })
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok || !resultado.exito) {
+            mostrarAlerta(
+                resultado.mensaje || "No se pudo verificar el código."
+            );
+            return;
+        }
+
+        clearInterval(intervaloCambio);
+
+        etapaVerificarCodigoCambio.hidden = true;
+        etapaNuevaCambio.hidden = false;
+
+        passwordNuevaVerificada.value = "";
+        confirmarPasswordNuevaVerificada.value = "";
+        coincidenciaCambioMail.textContent = "";
+
+        requisitosCambioMailValidos = false;
+
+        passwordNuevaVerificada.focus();
+
+        mostrarAlerta("¡Código verificado correctamente!");
+
+    } catch (error) {
+        console.error("Error al verificar el código:", error);
+        mostrarAlerta("No se pudo conectar con el servidor.");
+
+    } finally {
+        boton.disabled = false;
+        boton.textContent = "Verificar código";
+    }
+});
+// GUARDAR NUEVA CONTRASEÑA DESPUÉS DE VERIFICAR EL CÓDIGO
+
+guardarCambioVerificado.addEventListener("click", async function() {
+
+    const nueva = passwordNuevaVerificada.value;
+    const confirmacion = confirmarPasswordNuevaVerificada.value;
+
+    const boton = this;
+
+    requisitosCambioMailValidos = validarRequisitosCambio(
+        nueva,
+        "cambioMailReq"
+    );
+
+    if (!requisitosCambioMailValidos) {
+        mostrarAlerta(
+            "La contraseña debe cumplir todos los requisitos de seguridad."
+        );
+        passwordNuevaVerificada.focus();
+        return;
+    }
+
+    if (nueva !== confirmacion) {
+        mostrarAlerta("Las contraseñas no coinciden.");
+        confirmarPasswordNuevaVerificada.focus();
+        return;
+    }
+
+    boton.disabled = true;
+    boton.textContent = "Guardando...";
+
+    try {
+        const respuesta = await fetch(
+            "/api/restablecer-contrasena-cambio",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "same-origin",
+                body: JSON.stringify({
+                    password_nueva: nueva
+                })
+            }
+        );
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok || !resultado.exito) {
+            mostrarAlerta(
+                resultado.mensaje || "No se pudo cambiar la contraseña."
+            );
+            return;
+        }
+
+        clearInterval(intervaloCambio);
+
+        cambiarContrasenaModal.hidden = true;
+
+        passwordNuevaVerificada.value = "";
+        confirmarPasswordNuevaVerificada.value = "";
+        codigoCambio.value = "";
+
+        etapaElegirCambio.hidden = false;
+        etapaCambioActual.hidden = true;
+        etapaSolicitarCodigoCambio.hidden = true;
+        etapaVerificarCodigoCambio.hidden = true;
+        etapaNuevaCambio.hidden = true;
+
+        mostrarAlerta("¡Tu contraseña se cambió correctamente!");
+
+    } catch (error) {
+        console.error("Error al guardar la nueva contraseña:", error);
+
+        mostrarAlerta(
+            "No se pudo conectar con el servidor."
+        );
+
+    } finally {
+        boton.disabled = false;
+        boton.textContent = "Guardar nueva contraseña";
+    }
+});
+// CANCELAR Y CERRAR EL MODAL
+
+cancelarCambioContrasena.addEventListener("click", function() {
+
+    clearInterval(intervaloCambio);
+
+    cambiarContrasenaModal.hidden = true;
+
+    etapaElegirCambio.hidden = false;
+    etapaCambioActual.hidden = true;
+    etapaSolicitarCodigoCambio.hidden = true;
+    etapaVerificarCodigoCambio.hidden = true;
+    etapaNuevaCambio.hidden = true;
+
+    passwordActualCambio.value = "";
+    passwordNuevaCambio.value = "";
+    confirmarPasswordNuevaCambio.value = "";
+
+    passwordNuevaVerificada.value = "";
+    confirmarPasswordNuevaVerificada.value = "";
+
+    codigoCambio.value = "";
+
+    coincidenciaCambio.textContent = "";
+    coincidenciaCambioMail.textContent = "";
+
+    segundosCambio = 120;
+    reenviarCodigoCambio.disabled = true;
+});
+// ======================================
+// VALIDAR REQUISITOS DE CONTRASEÑA
+// ======================================
+
+function validarRequisitosCambio(password, prefijo) {
+
+    const requisitos = {
+        length: password.length >= 8,
+        upper: /[A-Z]/.test(password),
+        lower: /[a-z]/.test(password),
+        number: /[0-9]/.test(password),
+        symbol: /[^A-Za-z0-9]/.test(password)
+    };
+
+    const textos = {
+        length: "Al menos 8 caracteres",
+        upper: "Una mayúscula",
+        lower: "Una minúscula",
+        number: "Un número",
+        symbol: "Un símbolo"
+    };
+
+    Object.keys(requisitos).forEach(function(clave) {
+
+        const elemento = document.getElementById(
+            prefijo + clave.charAt(0).toUpperCase() + clave.slice(1)
+        );
+
+        if (!elemento) return;
+
+        elemento.textContent =
+            (requisitos[clave] ? "✓ " : "✕ ") + textos[clave];
+
+        elemento.classList.toggle("valid", requisitos[clave]);
+    });
+
+    return Object.values(requisitos).every(Boolean);
+}
+
+
+// VALIDAR CONTRASEÑA DE LA PRIMERA OPCIÓN
+
+passwordNuevaCambio.addEventListener("input", function() {
+
+    requisitosCambioValidos = validarRequisitosCambio(
+        passwordNuevaCambio.value,
+        "cambioReq"
+    );
+
+    comprobarCoincidenciaCambio();
+});
+
+
+// VALIDAR CONTRASEÑA DE LA SEGUNDA OPCIÓN
+
+passwordNuevaVerificada.addEventListener("input", function() {
+
+    requisitosCambioMailValidos = validarRequisitosCambio(
+        passwordNuevaVerificada.value,
+        "cambioMailReq"
+    );
+
+    comprobarCoincidenciaCambioMail();
+});
+
+
+// COMPROBAR QUE LAS CONTRASEÑAS COINCIDAN
+
+function comprobarCoincidenciaCambio() {
+
+    if (!confirmarPasswordNuevaCambio.value) {
+        coincidenciaCambio.textContent = "";
+        return false;
+    }
+
+    if (passwordNuevaCambio.value === confirmarPasswordNuevaCambio.value) {
+        coincidenciaCambio.textContent = "✓ Las contraseñas coinciden";
+        coincidenciaCambio.style.color = "#16834a";
+        return true;
+    }
+
+    coincidenciaCambio.textContent = "✕ Las contraseñas no coinciden";
+    coincidenciaCambio.style.color = "#c62828";
+
+    return false;
+}
+
+
+function comprobarCoincidenciaCambioMail() {
+
+    if (!confirmarPasswordNuevaVerificada.value) {
+        coincidenciaCambioMail.textContent = "";
+        return false;
+    }
+
+    if (passwordNuevaVerificada.value === confirmarPasswordNuevaVerificada.value) {
+        coincidenciaCambioMail.textContent = "✓ Las contraseñas coinciden";
+        coincidenciaCambioMail.style.color = "#16834a";
+        return true;
+    }
+
+    coincidenciaCambioMail.textContent = "✕ Las contraseñas no coinciden";
+    coincidenciaCambioMail.style.color = "#c62828";
+
+    return false;
+}
+
+
+confirmarPasswordNuevaCambio.addEventListener(
+    "input",
+    comprobarCoincidenciaCambio
+);
+
+confirmarPasswordNuevaVerificada.addEventListener(
+    "input",
+    comprobarCoincidenciaCambioMail
+);
+// ======================================
+// GUARDAR CAMBIO CON CONTRASEÑA ACTUAL
+// ======================================
+
+guardarCambioActual.addEventListener("click", async function() {
+
+    const actual = passwordActualCambio.value;
+    const nueva = passwordNuevaCambio.value;
+    const confirmacion = confirmarPasswordNuevaCambio.value;
+
+    if (!actual) {
+        mostrarAlerta("Ingresá tu contraseña actual.");
+        passwordActualCambio.focus();
+        return;
+    }
+
+    requisitosCambioValidos = validarRequisitosCambio(nueva, "cambioReq");
+
+    if (!requisitosCambioValidos) {
+        mostrarAlerta("La nueva contraseña debe cumplir todos los requisitos de seguridad.");
+        passwordNuevaCambio.focus();
+        return;
+    }
+
+    if (nueva !== confirmacion) {
+        mostrarAlerta("Las contraseñas no coinciden.");
+        confirmarPasswordNuevaCambio.focus();
+        return;
+    }
+
+    if (actual === nueva) {
+        mostrarAlerta("La nueva contraseña debe ser diferente de la actual.");
+        passwordNuevaCambio.focus();
+        return;
+    }
+
+    const boton = this;
+    boton.disabled = true;
+
+    try {
+
+        const respuesta = await fetch("/api/cambiar-contrasena", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                password_actual: actual,
+                password_nueva: nueva
+            })
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok || !resultado.exito) {
+            mostrarAlerta(
+                resultado.mensaje || "No se pudo cambiar la contraseña."
+            );
+            return;
+        }
+
+        cambiarContrasenaModal.hidden = true;
+
+        passwordActualCambio.value = "";
+        passwordNuevaCambio.value = "";
+        confirmarPasswordNuevaCambio.value = "";
+
+        mostrarAlerta("¡Tu contraseña se cambió correctamente!");
+
+    } catch (error) {
+
+        console.error("Error al cambiar la contraseña:", error);
+        mostrarAlerta("No se pudo conectar con el servidor.");
+
+    } finally {
+        boton.disabled = false;
+    }
+
+});
+
+// ABRIR LA VENTANA
+
+
+console.log("INICIO DEL EVENTO DE RECUPERACIÓN");
+console.log("Enlace:", olvidoContrasena);
+console.log("Modal:", recuperacionModal);
+console.log("SE EJECUTÓ EL CLIC");
+document.getElementById("olvidoContrasena").onclick = function(event) {
+  event.preventDefault();
+
+
+  document.getElementById("recuperacionModal").hidden = false;
+
+
+  document.getElementById("etapaSolicitarCodigo").hidden = false;
+  document.getElementById("etapaVerificarCodigo").hidden = true;
+  document.getElementById("etapaNuevaContrasena").hidden = true;
+
+
+  document.getElementById("correoRecuperacion").value =
+    document.getElementById("usuario").value.trim();
+
+
+  document.getElementById("codigoRecuperacion").value = "";
+  document.getElementById("nuevaContrasena").value = "";
+  document.getElementById("confirmarNuevaContrasena").value = "";
+
+
+  actualizarRequisitosRecuperacion("");
+
+
+  document.getElementById("correoRecuperacion").focus();
+};
+
+
+// TEMPORIZADOR DE RECUPERACIÓN DE CONTRASEÑA
+
+const reenviarCodigoRecuperacion = document.getElementById("reenviarCodigoRecuperacion");
+const temporizadorRecuperacion = document.getElementById("temporizadorRecuperacion");
+
+let intervaloRecuperacion = null;
+let segundosRecuperacion = 120;
+
+function iniciarTemporizadorRecuperacion() {
+
+  clearInterval(intervaloRecuperacion);
+
+  segundosRecuperacion = 120;
+
+  reenviarCodigoRecuperacion.disabled = true;
+
+  actualizarTemporizadorRecuperacion();
+
+  intervaloRecuperacion = setInterval(function() {
+
+    segundosRecuperacion--;
+
+    actualizarTemporizadorRecuperacion();
+
+    if (segundosRecuperacion <= 0) {
+
+      clearInterval(intervaloRecuperacion);
+
+      reenviarCodigoRecuperacion.disabled = false;
+
+      temporizadorRecuperacion.textContent =
+        "Ya podés solicitar otro código.";
+    }
+
+  }, 1000);
+}
+
+function actualizarTemporizadorRecuperacion() {
+
+  const minutos = Math.floor(segundosRecuperacion / 60);
+  const segundos = segundosRecuperacion % 60;
+
+  temporizadorRecuperacion.textContent =
+    "Podrás reenviar el código en " +
+    String(minutos).padStart(2, "0") + ":" +
+    String(segundos).padStart(2, "0");
+}
+
+
+
+// SOLICITAR EL CÓDIGO
+
+
+document.getElementById("enviarCodigoRecuperacion").addEventListener("click", async function() {
+
+
+  const email = correoRecuperacion.value.trim().toLowerCase();
+
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+  if (!emailRegex.test(email)) {
+    mostrarAlerta("Ingresá un correo electrónico válido.");
+    correoRecuperacion.focus();
+    return;
+  }
+
+
+  const boton = this;
+  boton.disabled = true;
+
+
+  try {
+    const respuesta = await fetch("/api/solicitar-recuperacion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({ correo: email })
+    });
+
+
+    const resultado = await respuesta.json();
+
+
+    if (!respuesta.ok || !resultado.exito) {
+      mostrarAlerta(resultado.mensaje || "No se pudo solicitar el código.");
+      return;
+    }
+
+
+etapaSolicitarCodigo.hidden = true;
+etapaVerificarCodigo.hidden = false;
+
+iniciarTemporizadorRecuperacion();
+
+console.log(
+  "¿Está deshabilitado el botón?",
+  reenviarCodigoRecuperacion.disabled
+);
+
+codigoRecuperacion.focus();
+
+
+  } catch (error) {
+    mostrarAlerta("No se pudo conectar con el servidor.");
+    console.error(error);
+
+
+  } finally {
+    boton.disabled = false;
+  }
+});
+// REENVIAR CÓDIGO DE RECUPERACIÓN
+
+reenviarCodigoRecuperacion.addEventListener("click", async function() {
+
+  const email = correoRecuperacion.value.trim().toLowerCase();
+
+  const boton = this;
+  boton.disabled = true;
+
+  try {
+
+    const respuesta = await fetch("/api/solicitar-recuperacion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        correo: email
+      })
+    });
+
+    const resultado = await respuesta.json();
+
+    if (!respuesta.ok || !resultado.exito) {
+
+      mostrarAlerta(
+        resultado.mensaje || "No se pudo reenviar el código."
+      );
+
+      boton.disabled = false;
+      return;
+    }
+
+    codigoRecuperacion.value = "";
+
+    iniciarTemporizadorRecuperacion();
+
+    mostrarAlerta("Se solicitó un nuevo código de recuperación.");
+
+    codigoRecuperacion.focus();
+
+  } catch (error) {
+
+    mostrarAlerta("No se pudo conectar con el servidor.");
+    console.error(error);
+
+    boton.disabled = false;
+  }
+});
+
+// VERIFICAR EL CÓDIGO
+
+
+document.getElementById("verificarCodigoRecuperacion").addEventListener("click", async function() {
+
+
+  const codigo = codigoRecuperacion.value.trim();
+  const email = correoRecuperacion.value.trim().toLowerCase();
+
+
+  if (!/^\d{6}$/.test(codigo)) {
+    mostrarAlerta("Ingresá un código válido de seis dígitos.");
+    codigoRecuperacion.focus();
+    return;
+  }
+
+
+  const boton = this;
+  boton.disabled = true;
+
+
+  try {
+    const respuesta = await fetch("/api/verificar-codigo-recuperacion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        correo: email,
+        codigo: codigo
+      })
+    });
+
+
+    const resultado = await respuesta.json();
+
+
+    if (!respuesta.ok || !resultado.exito) {
+      mostrarAlerta(resultado.mensaje || "El código no es válido.");
+      codigoRecuperacion.value = "";
+      codigoRecuperacion.focus();
+      return;
+    }
+
+
+    etapaVerificarCodigo.hidden = true;
+    etapaNuevaContrasena.hidden = false;
+
+
+    nuevaContrasena.focus();
+
+
+  } catch (error) {
+    mostrarAlerta("No se pudo verificar el código.");
+    console.error(error);
+
+
+  } finally {
+    boton.disabled = false;
+  }
+});
+
+
+
+
+// COMPROBAR LOS REQUISITOS DE LA NUEVA CONTRASEÑA
+
+
+function actualizarRequisitosRecuperacion(password) {
+
+
+  const requisitos = {
+    length: password.length >= 8,
+    upper: /[A-Z]/.test(password),
+    lower: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    symbol: /[^A-Za-z0-9]/.test(password)
+  };
+
+
+  document.getElementById("recReqLength").classList.toggle("valid", requisitos.length);
+  document.getElementById("recReqUpper").classList.toggle("valid", requisitos.upper);
+  document.getElementById("recReqLower").classList.toggle("valid", requisitos.lower);
+  document.getElementById("recReqNumber").classList.toggle("valid", requisitos.number);
+  document.getElementById("recReqSymbol").classList.toggle("valid", requisitos.symbol);
+
+
+  const textos = {
+    length: "Al menos 8 caracteres",
+    upper: "Una mayúscula",
+    lower: "Una minúscula",
+    number: "Un número",
+    symbol: "Un símbolo"
+  };
+
+
+  document.getElementById("recReqLength").textContent =
+    (requisitos.length ? "✓ " : "✕ ") + textos.length;
+
+
+  document.getElementById("recReqUpper").textContent =
+    (requisitos.upper ? "✓ " : "✕ ") + textos.upper;
+
+
+  document.getElementById("recReqLower").textContent =
+    (requisitos.lower ? "✓ " : "✕ ") + textos.lower;
+
+
+  document.getElementById("recReqNumber").textContent =
+    (requisitos.number ? "✓ " : "✕ ") + textos.number;
+
+
+  document.getElementById("recReqSymbol").textContent =
+    (requisitos.symbol ? "✓ " : "✕ ") + textos.symbol;
+
+
+  requisitosRecuperacionValidos = Object.values(requisitos).every(Boolean);
+}
+
+
+nuevaContrasena.addEventListener("input", function() {
+  actualizarRequisitosRecuperacion(nuevaContrasena.value);
+  comprobarCoincidenciaRecuperacion();
+});
+
+
+confirmarNuevaContrasena.addEventListener("input", comprobarCoincidenciaRecuperacion);
+
+
+
+
+function comprobarCoincidenciaRecuperacion() {
+
+
+  if (!confirmarNuevaContrasena.value) {
+    coincidenciaRecuperacion.textContent = "";
+    coincidenciaRecuperacion.className = "verification-message";
+    return false;
+  }
+
+
+  if (nuevaContrasena.value === confirmarNuevaContrasena.value) {
+    coincidenciaRecuperacion.textContent = "✓ Las contraseñas coinciden";
+    coincidenciaRecuperacion.style.color = "#16834a";
+    return true;
+  }
+
+
+  coincidenciaRecuperacion.textContent = "✕ Las contraseñas no coinciden";
+  coincidenciaRecuperacion.style.color = "#c62828";
+  return false;
+}
+
+
+
+
+// GUARDAR LA NUEVA CONTRASEÑA
+
+
+document.getElementById("guardarNuevaContrasena").addEventListener("click", async function() {
+
+
+  const password = nuevaContrasena.value;
+  const confirmation = confirmarNuevaContrasena.value;
+
+
+  actualizarRequisitosRecuperacion(password);
+
+
+  if (!requisitosRecuperacionValidos) {
+    mostrarAlerta("La contraseña debe cumplir todos los requisitos de seguridad.");
+    nuevaContrasena.focus();
+    return;
+  }
+
+
+  if (password !== confirmation) {
+    mostrarAlerta("Las contraseñas no coinciden.");
+    confirmarNuevaContrasena.focus();
+    return;
+  }
+
+
+  const boton = this;
+  boton.disabled = true;
+
+
+  try {
+    const respuesta = await fetch("/api/restablecer-contrasena", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        password: password
+      })
+    });
+
+
+    const resultado = await respuesta.json();
+
+
+    if (!respuesta.ok || !resultado.exito) {
+      mostrarAlerta(resultado.mensaje || "No se pudo cambiar la contraseña.");
+      return;
+    }
+
+
+    recuperacionModal.hidden = true;
+
+
+    document.getElementById("usuario").value =
+      correoRecuperacion.value.trim().toLowerCase();
+
+
+    document.getElementById("contrasena").value = "";
+
+
+    mostrarAlerta("¡Tu contraseña se actualizó correctamente! Ya podés iniciar sesión.");
+
+
+  } catch (error) {
+    mostrarAlerta("No se pudo conectar con el servidor.");
+    console.error(error);
+
+
+  } finally {
+    boton.disabled = false;
+  }
+});
+
+
+cerrarAlerta.addEventListener("click", function() {
+  alertaPersonalizada.hidden = true;
+});
+
+
+registerForm.addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  const cedula = registerCedula.value.trim();
+  const email = registerEmail.value.trim().toLowerCase();
+  const password = registerPassword.value;
+  const confirmation = confirmPassword.value;
+
+const cedulaRegex = /^\d{1,3}(?:\.\d{3})*-\d$/;
+
+  if (!cedulaRegex.test(cedula)) {
+    mostrarAlerta("La cédula debe tener un guion. Ejemplo: 1.234.567-8");
+    registerCedula.focus();
+    return;
+  }
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+    mostrarAlerta("Ingresá un correo electrónico válido.");
+    registerEmail.focus();
+    return;
+  }
+
+  const security = checkPasswordStrength(password);
+
+  if (!security.valid) {
+    mostrarAlerta("La contraseña debe cumplir todos los requisitos de seguridad.");
+    registerPassword.focus();
+    return;
+  }
+
+  if (password !== confirmation) {
+    mostrarAlerta("Las contraseñas no coinciden.");
+    confirmPassword.focus();
+    return;
+  }
+
+  try {
+    const respuesta = await fetch("/api/registro", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        cedula: cedula,
+        correo: email,
+        password: password
+      })
+    });
+
+    const resultado = await respuesta.json();
+
+if (!respuesta.ok) {
+  mostrarAlerta(resultado.mensaje || "No se pudo iniciar el registro.");
+  return;
+}
+
+    cedulaPendienteVerificacion = cedula;
+
+    registerForm.reset();
+    checkPasswordStrength("");
+    passwordMatch.textContent = "";
+
+    // Pasar directamente a la verificación
+mostrarFormularioVerificacion(email);
+
+  } catch (error) {
+    mostrarAlerta("No se pudo conectar con el servidor. Verificá que Python esté funcionando.");
+    console.error(error);
+  }
+});
+
+// VERIFICAR EL CÓDIGO
+/* VERIFICAR EL CÓDIGO */
+
+
+verificationForm.addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  const codigo = verificationCode.value.trim();
+
+  if (!/^\d{6}$/.test(codigo)) {
+    mostrarAlerta("Ingresá un código válido de seis dígitos.");
+    verificationCode.focus();
+    return;
+  }
+
+  try {
+    const respuesta = await fetch("/api/verificar-correo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        correo: correoPendienteVerificacion,
+        codigo: codigo
+      })
+    });
+
+    const resultado = await respuesta.json();
+
+    if (!respuesta.ok) {
+      mostrarAlerta(resultado.mensaje);
+      verificationCode.value = "";
+      verificationCode.focus();
+      return;
+    }
+
+// Guardar los datos básicos del perfil
+localStorage.setItem("perfilUsuario", JSON.stringify({
+  name: "Paciente",
+  cedula: resultado.usuario.cedula,
+  email: resultado.usuario.correo,
+  birthDate: "",
+  phone: ""
+}));
+
+// Ocultar la pantalla de autenticación
+loginScreen.style.display = "none";
+
+// Mostrar la aplicación
+app.hidden = false;
+
+// Actualizar el perfil y mostrar la pantalla principal
+renderProfile();
+showScreen("inicio");
+
+// Limpiar los datos temporales del formulario
+correoPendienteVerificacion = "";
+cedulaPendienteVerificacion = "";
+
+verificationForm.reset();
+
+
+  } catch (error) {
+    mostrarAlerta("No se pudo conectar con el servidor. Intentá nuevamente.");
+    console.error(error);
+  }
+});
+
+
+/* REENVIAR EL CÓDIGO */
+
+resendCodeButton.addEventListener("click", async function() {
+
+  if (!correoPendienteVerificacion || tiempoRestanteRegistro > 0) {
+    return;
+  }
+
+  resendCodeButton.disabled = true;
+
+  try {
+    const respuesta = await fetch("/api/reenviar-codigo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        correo: correoPendienteVerificacion
+      })
+    });
+
+    const resultado = await respuesta.json();
+
+    if (!respuesta.ok || !resultado.exito) {
+      mostrarAlerta(
+        resultado.mensaje || "No se pudo reenviar el código."
+      );
+
+      resendCodeButton.disabled = tiempoRestanteRegistro > 0;
+      return;
+    }
+
+    verificationCode.value = "";
+    verificationCode.focus();
+
+    iniciarTemporizadorRegistro();
+
+  } catch (error) {
+    mostrarAlerta("No se pudo reenviar el código. Intentá nuevamente.");
+    console.error(error);
+
+    resendCodeButton.disabled = tiempoRestanteRegistro > 0;
+  }
+
+});
+/* INICIAR SESIÓN */
+
+loginForm.addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  const email = document.getElementById("usuario").value.trim().toLowerCase();
+  const password = document.getElementById("contrasena").value;
+
+  try {
+    const respuesta = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        correo: email,
+        password: password
+      })
+    });
+
+    const resultado = await respuesta.json();
+
+    if (!respuesta.ok) {
+      mostrarAlerta(resultado.mensaje);
+      return;
+    }
+
+localStorage.setItem("perfilUsuario", JSON.stringify({
+  name: "Paciente",
+  cedula: resultado.usuario.cedula,
+  email: resultado.usuario.correo,
+  birthDate: resultado.usuario.fecha_nacimiento || "",
+  phone: resultado.usuario.telefono || ""
+
+    }));
+
+    loginScreen.style.display = "none";
+    app.hidden = false;
+
+    renderProfile();
+    showScreen("inicio");
+
+  } catch (error) {
+    mostrarAlerta("No se pudo conectar con el servidor. Verificá que Python esté funcionando.");
+    console.error(error);
+  }
+});
+
+
+/* RECUPERAR SESIÓN */
+
+
+async function checkSession() {
+    try {
+        const respuesta = await fetch("/api/sesion", {
+            method: "GET",
+            credentials: "same-origin"
+        });
+
+        const datos = await respuesta.json();
+
+if (!respuesta.ok || !datos.exito) {
+    localStorage.removeItem("perfilUsuario");
+
+    app.hidden = true;
+    loginScreen.style.display = "flex";
+
+    registerForm.hidden = false;
+    loginForm.hidden = true;
+    verificationForm.hidden = true;
+
+    history.replaceState({ pantalla: "registro" }, "", "#registro");
+
+    return;
+}
+
+        // COMPROBAR SI ENTRÓ COMO INVITADO
+if (datos.modo_invitado) {
+    modoInvitado = false;
+    localStorage.removeItem("perfilUsuario");
+
+    // Cerrar la sesión de invitado en el servidor
+await fetch("/api/logout", {
+    method: "POST",
+    credentials: "same-origin"
+});
+
+    app.hidden = true;
+    loginScreen.style.display = "flex";
+
+    registerForm.hidden = false;
+    loginForm.hidden = true;
+    verificationForm.hidden = true;
+
+    history.replaceState({ pantalla: "registro" }, "", "#registro");
+    return;
+}
+
+        // USUARIO REGISTRADO
+        modoInvitado = false;
+        aplicarModoInvitado();
+
+        localStorage.setItem("perfilUsuario", JSON.stringify({
+            name: "Paciente",
+            cedula: datos.usuario.cedula,
+            email: datos.usuario.correo,
+            birthDate: datos.usuario.fecha_nacimiento || "",
+            phone: datos.usuario.telefono || ""
+        }));
+
+        loginScreen.style.display = "none";
+        app.hidden = false;
+
+        const pantallaGuardada = localStorage.getItem("pantallaActual");
+
+        const pantallasPermitidas = [
+            "inicio",
+            "recetas",
+            "buscar",
+            "perfil",
+            "ajustes"
+        ];
+
+        const pantalla = pantallasPermitidas.includes(pantallaGuardada)
+            ? pantallaGuardada
+            : "inicio";
+
+        renderProfile();
+        showScreen(pantalla, false);
+
+        history.replaceState(
+            { pantalla: pantalla },
+            "",
+            "#" + pantalla
+        );
+
+    } catch (error) {
+        console.error("Error al comprobar la sesión:", error);
+        loginScreen.style.display = "flex";
+        app.hidden = true;
+    }
+}
+
+
+/* CERRAR SESIÓN */
+
+
+/* ======================================
+   CONFIRMACIÓN Y CIERRE DE SESIÓN
+====================================== */
+
+const logoutButton = document.getElementById("logoutButton");
+
+const cerrarSesionModal = document.getElementById("cerrarSesionModal");
+const noCerrarSesion = document.getElementById("noCerrarSesion");
+const siCerrarSesion = document.getElementById("siCerrarSesion");
+
+// ABRIR LA VENTANA DE CONFIRMACIÓN
+
+logoutButton.addEventListener("click", function() {
+    cerrarSesionModal.hidden = false;
+    noCerrarSesion.focus();
+});
+
+// CANCELAR EL CIERRE DE SESIÓN
+
+noCerrarSesion.addEventListener("click", function() {
+    cerrarSesionModal.hidden = true;
+    logoutButton.focus();
+});
+
+// CONFIRMAR EL CIERRE DE SESIÓN
+
+siCerrarSesion.addEventListener("click", async function() {
+
+    const boton = this;
+    boton.disabled = true;
+
+    try {
+        const respuesta = await fetch("/api/logout", {
+            method: "POST",
+            credentials: "same-origin"
+        });
+
+        if (!respuesta.ok) {
+            throw new Error("No se pudo cerrar la sesión.");
+        }
+
+        localStorage.removeItem("pantallaActual");
+        localStorage.removeItem("perfilUsuario");
+
+        renderProfile();
+        closeProfileModal();
+
+        cerrarSesionModal.hidden = true;
+
+        app.hidden = true;
+        loginScreen.style.display = "flex";
+
+        loginForm.reset();
+        registerForm.reset();
+
+    } catch (error) {
+        console.error("Error al cerrar sesión:", error);
+        mostrarAlerta("No se pudo cerrar la sesión. Intentá nuevamente.");
+
+    } finally {
+        boton.disabled = false;
+    }
+
+});
+
+/* DATOS DEL PERFIL */
+
+const profileModal = document.getElementById("profileModal");
+const editProfileForm = document.getElementById("editProfileForm");
+
+const profileInputs = {
+  name: document.getElementById("editName"),
+  cedula: document.getElementById("editCedula"),
+  birthDate: document.getElementById("editBirthDate"),
+  email: document.getElementById("editEmail"),
+  phone: document.getElementById("editPhone")
+};
+/* CONFIGURACIÓN DEL CELULAR */
+
+/* CONFIGURACIÓN DEL CELULAR */
+
+const phoneInput = profileInputs.phone;
+
+const phonePlugin = window.intlTelInput(phoneInput, {
+  initialCountry: "uy",
+  countryNameLocale: "es",
+  separateDialCode: true,
+  countrySearch: true,
+  loadUtils: () =>
+    import("https://cdn.jsdelivr.net/npm/intl-tel-input@latest/build/js/utils.js")
+});
+/* CONFIGURACIÓN DEL CALENDARIO */
+
+const today = new Date();
+
+const todayString = [
+  today.getFullYear(),
+  String(today.getMonth() + 1).padStart(2, "0"),
+  String(today.getDate()).padStart(2, "0")
+].join("-");
+
+profileInputs.birthDate.min = "1900-01-01";
+profileInputs.birthDate.max = todayString;
+
+const defaultProfileData = {
+  name: "Paciente de ejemplo",
+  cedula: "",
+  birthDate: "",
+  email: "usuario@ejemplo.com",
+  phone: ""
+};
+
+/* OBTENER LOS DATOS GUARDADOS */
+
+function getProfileData() {
+  try {
+    const savedProfile = localStorage.getItem("perfilUsuario");
+
+    return savedProfile
+      ? {
+          ...defaultProfileData,
+          ...JSON.parse(savedProfile)
+        }
+      : { ...defaultProfileData };
+
+  } catch (error) {
+    return { ...defaultProfileData };
+  }
+}
+
+/* MOSTRAR LOS DATOS EN LA PANTALLA DEL PERFIL */
+
+function renderProfile() {
+  const profile = getProfileData();
+
+  document.getElementById("profileNameDisplay").textContent =
+    profile.name;
+
+  document.getElementById("profileCedulaDisplay").textContent =
+    profile.cedula;
+
+  document.getElementById("profileEmail").textContent =
+    profile.email;
+
+  document.getElementById("profileBirthDateDisplay").textContent =
+    profile.birthDate;
+
+  document.getElementById("profilePhone").textContent =
+    profile.phone || "No ingresado";
+}
+
+/* ABRIR LA VENTANA DE EDICIÓN */
+
+function openProfileModal() {
+  const profile = getProfileData();
+
+  profileInputs.name.value = profile.name;
+  profileInputs.cedula.value = profile.cedula;
+  profileInputs.birthDate.value = profile.birthDate;
+  profileInputs.email.value = profile.email;
+
+  // Cargar el número con su prefijo internacional
+  phonePlugin.setNumber(profile.phone || "");
+
+  // Bloquear cédula y fecha si ya fueron ingresadas
+  profileInputs.cedula.readOnly =
+    profile.cedula !== "";
+
+  profileInputs.birthDate.readOnly =
+    profile.birthDate !== "";
+
+  profileModal.hidden = false;
+
+  profileInputs.name.focus();
+}
+
+/* CERRAR LA VENTANA DE EDICIÓN */
+
+function closeProfileModal() {
+  profileModal.hidden = true;
+}
+
+/* CONECTAR LOS BOTONES DE LA VENTANA */
+
+document
+  .getElementById("editProfileButton")
+  .addEventListener("click", openProfileModal);
+
+document
+  .getElementById("closeProfileModal")
+  .addEventListener("click", closeProfileModal);
+
+document
+  .getElementById("cancelProfileModal")
+  .addEventListener("click", closeProfileModal);
+
+/* CERRAR AL HACER CLIC FUERA DE LA VENTANA */
+
+profileModal.addEventListener("click", function(event) {
+  if (event.target === profileModal) {
+    closeProfileModal();
+  }
+});
+
+/* CERRAR CON LA TECLA ESC */
+
+document.addEventListener("keydown", function(event) {
+  if (event.key === "Escape" && !profileModal.hidden) {
+    closeProfileModal();
+  }
+});
+
+/* GUARDAR LOS CAMBIOS DEL PERFIL */
+
+/* GUARDAR LOS CAMBIOS DEL PERFIL */
+
+function abrirModalCodigoCorreo(nuevoCorreo) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById("codigoCorreoModal");
+    const formulario = document.getElementById("codigoCorreoForm");
+    const campoCodigo = document.getElementById("codigoCorreoInput");
+    const mensaje = document.getElementById("mensajeCodigoCorreo");
+    const botonCancelar = document.getElementById("cancelarCodigoCorreo");
+    const botonReenviar = document.getElementById("reenviarCodigoCorreo");
+
+    modal.hidden = false;
+    campoCodigo.value = "";
+    mensaje.textContent = "";
+    campoCodigo.focus();
+
+let finalizado = false;
+let tiempoRestante = 120;
+let intervaloTemporizador;
+
+const pantallaTemporizador = document.getElementById("temporizadorCorreo");
+const textoTemporizador = document.getElementById("textoTemporizadorCorreo");
+
+function actualizarTemporizador() {
+  const minutos = Math.floor(tiempoRestante / 60);
+  const segundos = tiempoRestante % 60;
+
+  pantallaTemporizador.textContent =
+    `${String(minutos).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
+
+  if (tiempoRestante <= 0) {
+    clearInterval(intervaloTemporizador);
+
+    botonReenviar.disabled = false;
+    textoTemporizador.textContent = "Ya podés solicitar un nuevo código.";
+    return;
+  }
+
+  tiempoRestante--;
+}
+
+function iniciarTemporizador() {
+  clearInterval(intervaloTemporizador);
+
+  tiempoRestante = 120;
+  botonReenviar.disabled = true;
+
+  textoTemporizador.textContent = "Podrás solicitar un nuevo código en breve.";
+
+  actualizarTemporizador();
+
+  intervaloTemporizador = setInterval(actualizarTemporizador, 1000);
+}
+
+iniciarTemporizador();
+
+function cerrar(resultado) {
+      if (finalizado) return;
+
+      finalizado = true;
+      modal.hidden = true;
+      clearInterval(intervaloTemporizador);
+
+      formulario.removeEventListener("submit", verificar);
+      botonCancelar.removeEventListener("click", cancelar);
+      botonReenviar.removeEventListener("click", reenviar);
+
+      resolve(resultado);
+    }
+
+    async function verificar(event) {
+      event.preventDefault();
+
+      const codigo = campoCodigo.value.trim();
+
+      if (!/^\d{6}$/.test(codigo)) {
+        mensaje.textContent = "Ingresá los seis dígitos del código.";
+        return;
+      }
+
+      try {
+        const respuesta = await fetch("/api/verificar-cambio-correo", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            nuevo_correo: nuevoCorreo,
+            codigo: codigo
+          })
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok || !resultado.exito) {
+          mensaje.textContent = resultado.mensaje || "El código no es válido.";
+          return;
+        }
+
+        cerrar(true);
+
+      } catch (error) {
+        mensaje.textContent = "No se pudo verificar el código.";
+        console.error(error);
+      }
+    }
+
+    function cancelar() {
+      cerrar(false);
+    }
+
+async function reenviar() {
+  botonReenviar.disabled = true;
+  textoTemporizador.textContent = "Enviando un nuevo código...";
+
+  try {
+    const respuesta = await fetch("/api/reenviar-cambio-correo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({})
+    });
+
+    const resultado = await respuesta.json();
+
+    if (!respuesta.ok || !resultado.exito) {
+      textoTemporizador.textContent =
+        resultado.mensaje || "No se pudo reenviar el código.";
+
+      botonReenviar.disabled = false;
+      return;
+    }
+
+    iniciarTemporizador();
+
+    mensaje.textContent = "Te enviamos un nuevo código a tu correo.";
+
+  } catch (error) {
+    textoTemporizador.textContent = "No se pudo reenviar el código.";
+    botonReenviar.disabled = false;
+    console.error(error);
+  }
+}
+
+    formulario.addEventListener("submit", verificar);
+    botonCancelar.addEventListener("click", cancelar);
+    botonReenviar.addEventListener("click", reenviar);
+  });
+}
+
+
+
+editProfileForm.addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  const currentProfile = getProfileData();
+
+  const name = profileInputs.name.value.trim();
+  const cedula = profileInputs.cedula.value.trim();
+  const birthDate = profileInputs.birthDate.value;
+  const email = profileInputs.email.value.trim().toLowerCase();
+
+  // VALIDAR CORREO ELECTRÓNICO
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+    mostrarAlerta("El correo electrónico no es válido.");
+    profileInputs.email.focus();
+    return;
+  }
+
+  // VALIDAR CÉDULA
+  const cedulaRegex = /^\d[\d.]*-\d$/;
+
+  if (!currentProfile.cedula && !cedulaRegex.test(cedula)) {
+    mostrarAlerta("La cédula es incorrecta. Ejemplo: 1.234.567-8");
+    profileInputs.cedula.focus();
+    return;
+  }
+
+  // VALIDAR FECHA DE NACIMIENTO
+  if (!birthDate) {
+    mostrarAlerta("Tenés que ingresar una fecha de nacimiento.");
+    profileInputs.birthDate.focus();
+    return;
+  }
+
+  if (birthDate < "1900-01-01" || birthDate > todayString) {
+    mostrarAlerta("La fecha debe estar entre 1900 y el día de hoy.");
+    profileInputs.birthDate.focus();
+    return;
+  }
+
+  // VALIDAR CELULAR
+  if (!phoneInput.value.trim() || !phonePlugin.isValidNumber()) {
+    mostrarAlerta("El número de celular no es válido.");
+    phoneInput.focus();
+    return;
+  }
+
+  const fullPhoneNumber = phonePlugin.getNumber();
+
+  // SI CAMBIÓ EL CORREO, SOLICITAR VERIFICACIÓN
+  if (email !== (currentProfile.email || "").toLowerCase()) {
+    try {
+      const respuestaSolicitud = await fetch(
+        "/api/solicitar-cambio-correo",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({})
+        }
+      );
+
+      const resultadoSolicitud = await respuestaSolicitud.json();
+
+      if (!respuestaSolicitud.ok || !resultadoSolicitud.exito) {
+        mostrarAlerta(resultadoSolicitud.mensaje || "No se pudo enviar el código.");
+        return;
+      }
+
+      const verificado = await abrirModalCodigoCorreo(email);
+
+      if (!verificado) {
+        return;
+      }
+
+    } catch (error) {
+      console.error("Error al cambiar el correo:", error);
+      mostrarAlerta("Ocurrió un error al intentar cambiar el correo.");
+      return;
+    }
+  }
+
+  // GUARDAR TELÉFONO Y FECHA DE NACIMIENTO EN SUPABASE
+  try {
+    const respuestaPerfil = await fetch("/api/actualizar-perfil", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        telefono: fullPhoneNumber,
+        fecha_nacimiento: birthDate
+      })
+    });
+
+    const resultadoPerfil = await respuestaPerfil.json();
+
+    if (!respuestaPerfil.ok || !resultadoPerfil.exito) {
+      mostrarAlerta(resultadoPerfil.mensaje || "No se pudieron guardar los datos.");
+      return;
+    }
+
+  } catch (error) {
+    console.error("Error al guardar el perfil:", error);
+    mostrarAlerta("No se pudieron guardar los datos en la base de datos.");
+    return;
+  }
+
+  // CREAR PERFIL ACTUALIZADO
+  const profile = {
+    ...currentProfile,
+    name: name,
+    cedula: currentProfile.cedula || cedula,
+    birthDate: birthDate,
+    email: email,
+    phone: fullPhoneNumber
+  };
+
+  // GUARDAR EN LOCALSTORAGE
+  localStorage.setItem(
+    "perfilUsuario",
+    JSON.stringify(profile)
+  );
+
+  window.location.reload();
+});
+
+// CANCELAR RECUPERACIÓN DE CONTRASEÑA
+
+cancelarRecuperacion.addEventListener("click", function() {
+
+  // Detener el temporizador
+  clearInterval(intervaloRecuperacion);
+
+  // Cerrar el modal
+  recuperacionModal.hidden = true;
+
+  // Volver a la primera etapa para la próxima vez
+  etapaSolicitarCodigo.hidden = false;
+  etapaVerificarCodigo.hidden = true;
+  etapaNuevaContrasena.hidden = true;
+
+  // Limpiar los campos
+  correoRecuperacion.value = "";
+  codigoRecuperacion.value = "";
+  nuevaContrasena.value = "";
+  confirmarNuevaContrasena.value = "";
+
+  // Restablecer el temporizador
+  segundosRecuperacion = 120;
+  reenviarCodigoRecuperacion.disabled = true;
+
+  // Mostrar la pantalla de inicio de sesión
+  loginForm.hidden = false;
+
+});
+
+// ======================================
+// ELIMINACIÓN DE CUENTA
+// ======================================
+
+// ELEMENTOS DEL MODAL
+
+const eliminarCuentaModal = document.getElementById("eliminarCuentaModal");
+
+const etapaIdentidadEliminacion = document.getElementById("etapaIdentidadEliminacion");
+const etapaCodigoEliminacion = document.getElementById("etapaCodigoEliminacion");
+const etapaConfirmarEliminacion = document.getElementById("etapaConfirmarEliminacion");
+
+const correoEliminacion = document.getElementById("correoEliminacion");
+const passwordEliminacion = document.getElementById("passwordEliminacion");
+const codigoEliminacion = document.getElementById("codigoEliminacion");
+
+const enviarCodigoEliminacion = document.getElementById("enviarCodigoEliminacion");
+const verificarCodigoEliminacion = document.getElementById("verificarCodigoEliminacion");
+const reenviarCodigoEliminacion = document.getElementById("reenviarCodigoEliminacion");
+
+const temporizadorEliminacion = document.getElementById("temporizadorEliminacion");
+
+const cancelarEliminacionCuenta = document.getElementById("cancelarEliminacionCuenta");
+const noEliminarCuenta = document.getElementById("noEliminarCuenta");
+const siEliminarCuenta = document.getElementById("siEliminarCuenta");
+
+
+// ABRIR EL MODAL
+
+deleteAccountButton.addEventListener("click", function() {
+
+  etapaIdentidadEliminacion.hidden = false;
+  etapaCodigoEliminacion.hidden = true;
+  etapaConfirmarEliminacion.hidden = true;
+
+  correoEliminacion.value = "";
+  passwordEliminacion.value = "";
+  codigoEliminacion.value = "";
+
+  eliminarCuentaModal.hidden = false;
+
+  correoEliminacion.focus();
+
+});
+
+
+// TEMPORIZADOR
+
+let intervaloEliminacion = null;
+let segundosEliminacion = 120;
+
+function actualizarTemporizadorEliminacion() {
+
+  const minutos = Math.floor(segundosEliminacion / 60);
+  const segundos = segundosEliminacion % 60;
+
+  temporizadorEliminacion.textContent =
+    "Podrás reenviar el código en " +
+    String(minutos).padStart(2, "0") + ":" +
+    String(segundos).padStart(2, "0");
+
+}
+
+function iniciarTemporizadorEliminacion() {
+
+  clearInterval(intervaloEliminacion);
+
+  segundosEliminacion = 120;
+  reenviarCodigoEliminacion.disabled = true;
+
+  actualizarTemporizadorEliminacion();
+
+  intervaloEliminacion = setInterval(function() {
+
+    segundosEliminacion--;
+    actualizarTemporizadorEliminacion();
+
+    if (segundosEliminacion <= 0) {
+
+      clearInterval(intervaloEliminacion);
+
+      reenviarCodigoEliminacion.disabled = false;
+
+      temporizadorEliminacion.textContent =
+        "Ya podés solicitar otro código.";
+
+    }
+
+  }, 1000);
+
+}
+
+
+// SOLICITAR EL CÓDIGO
+
+enviarCodigoEliminacion.addEventListener("click", async function() {
+
+  const boton = this;
+  boton.disabled = true;
+
+  try {
+
+    const respuesta = await fetch("/api/solicitar-eliminacion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        correo: correoEliminacion.value.trim().toLowerCase(),
+        password: passwordEliminacion.value
+      })
+    });
+
+    const resultado = await respuesta.json();
+
+    if (!respuesta.ok || !resultado.exito) {
+      mostrarAlerta(resultado.mensaje);
+      return;
+    }
+
+    etapaIdentidadEliminacion.hidden = true;
+    etapaCodigoEliminacion.hidden = false;
+
+    iniciarTemporizadorEliminacion();
+    codigoEliminacion.focus();
+
+  } catch (error) {
+
+    mostrarAlerta("No se pudo conectar con el servidor.");
+    console.error(error);
+
+  } finally {
+
+    boton.disabled = false;
+
+  }
+
+});
+
+
+// VERIFICAR EL CÓDIGO
+
+verificarCodigoEliminacion.addEventListener("click", async function() {
+
+  const codigo = codigoEliminacion.value.trim();
+
+  if (!/^\d{6}$/.test(codigo)) {
+    mostrarAlerta("Ingresá un código válido de seis dígitos.");
+    codigoEliminacion.focus();
+    return;
+  }
+
+  const boton = this;
+  boton.disabled = true;
+
+  try {
+
+    const respuesta = await fetch("/api/verificar-codigo-eliminacion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        codigo: codigo
+      })
+    });
+
+    const resultado = await respuesta.json();
+
+    if (!respuesta.ok || !resultado.exito) {
+      mostrarAlerta(resultado.mensaje);
+      return;
+    }
+
+    clearInterval(intervaloEliminacion);
+
+    etapaCodigoEliminacion.hidden = true;
+    etapaConfirmarEliminacion.hidden = false;
+
+  } catch (error) {
+
+    mostrarAlerta("No se pudo verificar el código.");
+    console.error(error);
+
+  } finally {
+
+    boton.disabled = false;
+
+  }
+
+});
+
+
+// REENVIAR EL CÓDIGO
+
+reenviarCodigoEliminacion.addEventListener("click", async function() {
+
+  const boton = this;
+  boton.disabled = true;
+
+  try {
+
+    const respuesta = await fetch("/api/reenviar-codigo-eliminacion", {
+      method: "POST",
+      credentials: "same-origin"
+    });
+
+    const resultado = await respuesta.json();
+
+    if (!respuesta.ok || !resultado.exito) {
+      mostrarAlerta(resultado.mensaje);
+      boton.disabled = false;
+      return;
+    }
+
+    codigoEliminacion.value = "";
+    iniciarTemporizadorEliminacion();
+
+    mostrarAlerta("Te enviamos un nuevo código a tu correo.");
+
+  } catch (error) {
+
+    mostrarAlerta("No se pudo reenviar el código.");
+    console.error(error);
+    boton.disabled = false;
+
+  }
+
+});
+
+
+// CONFIRMAR LA ELIMINACIÓN
+
+siEliminarCuenta.addEventListener("click", async function() {
+
+  const boton = this;
+  boton.disabled = true;
+
+  try {
+
+    const respuesta = await fetch("/api/confirmar-eliminacion", {
+      method: "POST",
+      credentials: "same-origin"
+    });
+
+    const resultado = await respuesta.json();
+
+    if (!respuesta.ok || !resultado.exito) {
+      mostrarAlerta(resultado.mensaje);
+      return;
+    }
+
+    clearInterval(intervaloEliminacion);
+
+    localStorage.removeItem("perfilUsuario");
+    localStorage.removeItem("pantallaActual");
+
+    eliminarCuentaModal.hidden = true;
+
+    loginScreen.style.display = "flex";
+    app.hidden = true;
+
+    loginForm.reset();
+
+    mostrarAlerta("Tu cuenta fue eliminada correctamente.");
+
+  } catch (error) {
+
+    mostrarAlerta("No se pudo eliminar la cuenta.");
+    console.error(error);
+
+  } finally {
+
+    boton.disabled = false;
+
+  }
+
+});
+
+
+// CERRAR EL MODAL Y CANCELAR EL PROCESO EN EL SERVIDOR
+
+async function cerrarModalEliminacion() {
+
+  try {
+
+    const respuesta = await fetch("/api/cancelar-eliminacion", {
+      method: "POST",
+      credentials: "same-origin"
+    });
+
+    const resultado = await respuesta.json();
+
+    if (!respuesta.ok) {
+      mostrarAlerta(
+        resultado.mensaje || "No se pudo cancelar el proceso."
+      );
+      return;
+    }
+
+    // Detener el temporizador
+    clearInterval(intervaloEliminacion);
+
+    // Cerrar el modal
+    eliminarCuentaModal.hidden = true;
+
+    // Volver a la primera etapa
+    etapaIdentidadEliminacion.hidden = false;
+    etapaCodigoEliminacion.hidden = true;
+    etapaConfirmarEliminacion.hidden = true;
+
+    // Limpiar los campos
+    correoEliminacion.value = "";
+    passwordEliminacion.value = "";
+    codigoEliminacion.value = "";
+
+    // Reiniciar el temporizador
+    segundosEliminacion = 120;
+    reenviarCodigoEliminacion.disabled = true;
+
+  } catch (error) {
+
+    console.error("Error al cancelar la eliminación:", error);
+    mostrarAlerta("No se pudo conectar con el servidor. El proceso sigue abierto.");
+
+  }
+
+}
+
+noEliminarCuenta.addEventListener("click", cerrarModalEliminacion);
+
+cancelarEliminacionCuenta.addEventListener("click", cerrarModalEliminacion);
+// -----------------------------------------
+// MODO INVITADO
+// -----------------------------------------
+
+async function entrarComoInvitado() {
+    try {
+        const respuesta = await fetch("/api/invitado", {
+            method: "POST"
+        });
+
+        const datos = await respuesta.json();
+
+        if (!datos.exito) {
+            alert("No se pudo ingresar como invitado.");
+            return;
+        }
+
+        modoInvitado = true;
+
+        localStorage.removeItem("perfilUsuario");
+        localStorage.removeItem("pantallaActual");
+
+        loginScreen.hidden = true;
+        app.hidden = false;
+aplicarModoInvitado();
+
+history.pushState({ pantalla: "invitado" }, "", "#invitado");
+showScreen("inicio", false);
+
+    } catch (error) {
+        alert("No se pudo conectar con el servidor.");
+    }
+}
+
+guestButton?.addEventListener("click", entrarComoInvitado);
+guestButtonLogin?.addEventListener("click", entrarComoInvitado);
+
+
+// Mostrar las pantallas limitadas del invitado
+function aplicarModoInvitado() {
+
+    document.getElementById("guestProfileMessage").hidden = !modoInvitado;
+    document.getElementById("guestRecipesMessage").hidden = !modoInvitado;
+    document.getElementById("guestSearchMessage").hidden = !modoInvitado;
+
+    // Ocultar los datos del perfil
+    const perfil = document.querySelector("#perfil .detail-card");
+    if (perfil) perfil.hidden = modoInvitado;
+
+    // Ocultar las recetas y los resultados de búsqueda
+    document.getElementById("allRecipes").hidden = modoInvitado;
+    document.getElementById("searchResults").hidden = modoInvitado;
+
+    const empty = document.getElementById("empty");
+    if (empty) empty.hidden = modoInvitado;
+
+    // Ocultar opciones exclusivas de usuarios registrados
+    document.getElementById("guestSettings").hidden = !modoInvitado;
+    const registeredSettings = document.getElementById("registeredSettings");
+
+if (registeredSettings) {
+    registeredSettings.hidden = modoInvitado;
+}
+
+    document.getElementById("logoutButton").hidden = modoInvitado;
+    document.getElementById("changePasswordButton").hidden = modoInvitado;
+    document.getElementById("deleteAccountButton").hidden = modoInvitado;
+    document.getElementById("editProfileButton").hidden = modoInvitado;
+}
+
+// ELEMENTOS DEL MODAL
+const loginModal = document.getElementById("loginModal");
+const closeLoginModal = document.getElementById("closeLoginModal");
+const modalLoginForm = document.getElementById("modalLoginForm");
+const guestLoginButton = document.getElementById("guestLoginButton");
+const modalRegisterLink = document.getElementById("modalRegisterLink");
+
+// ABRIR MODAL
+guestLoginButton.addEventListener("click", function() {
+    loginModal.hidden = false;
+});
+
+// CERRAR MODAL CON LA CRUZ
+closeLoginModal.addEventListener("click", function() {
+    loginModal.hidden = true;
+});
+
+// CERRAR AL HACER CLIC FUERA DE LA VENTANA
+loginModal.addEventListener("click", function(event) {
+    if (event.target === loginModal) {
+        loginModal.hidden = true;
+    }
+});
+
+// IR AL REGISTRO
+modalRegisterLink.addEventListener("click", function(event) {
+    event.preventDefault();
+
+    loginModal.hidden = true;
+
+    app.hidden = true;
+    loginScreen.style.display = "flex";
+
+    registerForm.hidden = false;
+    loginForm.hidden = true;
+    verificationForm.hidden = true;
+});
+
+// INICIAR SESIÓN
+modalLoginForm.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("modalUsuario")
+        .value.trim().toLowerCase();
+
+    const password = document.getElementById("modalContrasena").value;
+
+    try {
+        const respuesta = await fetch("/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                correo: email,
+                password: password
+            })
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) {
+            mostrarAlerta(resultado.mensaje);
+            return;
+        }
+
+        modoInvitado = false;
+        localStorage.removeItem("pantallaActual");
+
+        localStorage.setItem("perfilUsuario", JSON.stringify({
+            name: "Paciente",
+            cedula: resultado.usuario.cedula,
+            email: resultado.usuario.correo,
+            birthDate: resultado.usuario.fecha_nacimiento || "",
+            phone: resultado.usuario.telefono || ""
+        }));
+
+        loginModal.hidden = true;
+
+        modalLoginForm.reset();
+
+        loginScreen.style.display = "none";
+        app.hidden = false;
+
+        aplicarModoInvitado();
+        renderProfile();
+        showScreen("inicio");
+
+    } catch (error) {
+        mostrarAlerta(
+            "No se pudo conectar con el servidor. Verificá que Python esté funcionando."
+        );
+        console.error(error);
+    }
+});
+
+// ELEMENTOS DE RECUPERACIÓN
+const recoveryEmailStep = document.getElementById("recoveryEmailStep");
+const recoveryCodeStep = document.getElementById("recoveryCodeStep");
+const recoveryPasswordStep = document.getElementById("recoveryPasswordStep");
+
+const modalOlvidoContrasena = document.getElementById("modalOlvidoContrasena");
+const recoveryEmail = document.getElementById("recoveryEmail");
+const recoveryCode = document.getElementById("recoveryCode");
+
+const recoveryNewPassword = document.getElementById("recoveryNewPassword");
+const recoveryConfirmPassword = document.getElementById("recoveryConfirmPassword");
+
+let correoRecuperacionModal = "";
+
+// MOSTRAR UNA ETAPA DE RECUPERACIÓN
+function mostrarEtapaRecuperacion(etapa) {
+    modalLoginForm.hidden = true;
+    recoveryEmailStep.hidden = etapa !== "correo";
+    recoveryCodeStep.hidden = etapa !== "codigo";
+    recoveryPasswordStep.hidden = etapa !== "contrasena";
+}
+
+// ABRIR RECUPERACIÓN
+modalOlvidoContrasena.addEventListener("click", function(event) {
+    event.preventDefault();
+
+    mostrarEtapaRecuperacion("correo");
+
+    recoveryEmail.value = document.getElementById("modalUsuario").value.trim();
+});
+
+// ENVIAR CÓDIGO
+document.getElementById("sendRecoveryCode").addEventListener("click", async function() {
+
+    const correo = recoveryEmail.value.trim().toLowerCase();
+
+    if (!correo) {
+        mostrarAlerta("Ingresá tu correo electrónico.");
+        recoveryEmail.focus();
+        return;
+    }
+
+    const boton = this;
+    boton.disabled = true;
+    boton.textContent = "Enviando...";
+
+    try {
+        const respuesta = await fetch("/api/solicitar-recuperacion", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify({ correo: correo })
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok || !resultado.exito) {
+            mostrarAlerta(resultado.mensaje || "No se pudo enviar el código.");
+            return;
+        }
+
+        correoRecuperacionModal = correo;
+        mostrarEtapaRecuperacion("codigo");
+        recoveryCode.value = "";
+
+        mostrarAlerta(resultado.mensaje);
+
+    } catch (error) {
+        console.error(error);
+        mostrarAlerta("No se pudo conectar con el servidor.");
+    } finally {
+        boton.disabled = false;
+        boton.textContent = "Enviar código";
+    }
+});
+
+// VERIFICAR CÓDIGO
+document.getElementById("verifyRecoveryCode").addEventListener("click", async function() {
+
+    const codigo = recoveryCode.value.trim();
+
+    if (!/^\d{6}$/.test(codigo)) {
+        mostrarAlerta("Ingresá un código válido de seis dígitos.");
+        return;
+    }
+
+    const boton = this;
+    boton.disabled = true;
+    boton.textContent = "Verificando...";
+
+    try {
+        const respuesta = await fetch("/api/verificar-codigo-recuperacion", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                correo: correoRecuperacionModal,
+                codigo: codigo
+            })
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok || !resultado.exito) {
+            mostrarAlerta(resultado.mensaje || "No se pudo verificar el código.");
+            return;
+        }
+
+        mostrarEtapaRecuperacion("contrasena");
+        recoveryNewPassword.value = "";
+        recoveryConfirmPassword.value = "";
+
+        mostrarAlerta("Código verificado correctamente.");
+
+    } catch (error) {
+        console.error(error);
+        mostrarAlerta("No se pudo conectar con el servidor.");
+    } finally {
+        boton.disabled = false;
+        boton.textContent = "Verificar código";
+    }
+});
+
+// GUARDAR NUEVA CONTRASEÑA
+document.getElementById("saveRecoveryPassword").addEventListener("click", async function() {
+
+    const nueva = recoveryNewPassword.value;
+    const confirmacion = recoveryConfirmPassword.value;
+
+    const requisitosValidos =
+        nueva.length >= 8 &&
+        nueva.length <= 128 &&
+        /[A-Z]/.test(nueva) &&
+        /[a-z]/.test(nueva) &&
+        /\d/.test(nueva) &&
+        /[^a-zA-Z0-9]/.test(nueva);
+
+    if (!requisitosValidos) {
+        mostrarAlerta(
+            "La contraseña debe tener entre 8 y 128 caracteres, una mayúscula, una minúscula, un número y un símbolo."
+        );
+        return;
+    }
+
+    if (nueva !== confirmacion) {
+        mostrarAlerta("Las contraseñas no coinciden.");
+        return;
+    }
+
+    const boton = this;
+    boton.disabled = true;
+    boton.textContent = "Guardando...";
+
+    try {
+        const respuesta = await fetch("/api/restablecer-contrasena", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                password: nueva
+            })
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok || !resultado.exito) {
+            mostrarAlerta(resultado.mensaje || "No se pudo cambiar la contraseña.");
+            return;
+        }
+
+        mostrarEtapaRecuperacion("login");
+
+        modalLoginForm.reset();
+        document.getElementById("modalUsuario").value = correoRecuperacionModal;
+
+        recoveryEmail.value = "";
+        recoveryCode.value = "";
+        recoveryNewPassword.value = "";
+        recoveryConfirmPassword.value = "";
+
+        mostrarAlerta("¡Contraseña actualizada! Ya podés iniciar sesión.");
+
+    } catch (error) {
+        console.error(error);
+        mostrarAlerta("No se pudo conectar con el servidor.");
+    } finally {
+        boton.disabled = false;
+        boton.textContent = "Guardar nueva contraseña";
+    }
+});
+
+// VOLVER AL INICIO DE SESIÓN
+document.getElementById("backToModalLogin").addEventListener("click", function() {
+    mostrarEtapaRecuperacion("login");
+});
+
+/* CARGAR LOS DATOS AL ABRIR LA APLICACIÓN */
+renderProfile();
+render();
+checkSession();
+
+</script>
+</body>
+</html>
