@@ -1,0 +1,5 @@
+Flask
+Werkzeug
+supabase
+python-dotenv
+gunicorn
