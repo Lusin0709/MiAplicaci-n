@@ -771,7 +771,7 @@ def login():
         }), 401
 
     except Exception as error:
-        print("Error al iniciar sesión:", type(error).__name__)
+        print("Error al iniciar sesión:", repr(error))
 
         return jsonify({
             "exito": False,
